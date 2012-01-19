@@ -1,0 +1,26 @@
+-Check when the king captures something
+- gå i damn för den andra
+- rokad
+
+Todo online:
+- Motståndare lämnade meddelande
+- Erbjud rematch
+- Misslyckad anslutning
+
+Generellt:
+- Resign knapp1
+
+Vid anslutning till server visa en DialogBox!
+
+Overview:
+
+
+1.) När man hostar en match står det "Waiting on player" tills någon kommer
+
+2.) Vid shack matt frågas man om man vill köra en till match
+	-Väljer man ja skickas en förfrågan till motståndaren
+		-Svarar han ja börjar en ny match
+		-Svarar han nej kommer man tillbaks till den gamla matchen och kan chatta
+	-Annars kommer man tillbaka till den gamla matchen
+
+3.) Om motståndaren lämnar meddelas man av en MessageBox och dirigeras tillbaks till menyn.
