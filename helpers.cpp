@@ -22,6 +22,18 @@ void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Ari
 	SendMessage(hwnd, WM_SETFONT, WPARAM(hFont), true);
 }
 
+string getText(HWND hwnd)
+{
+	int inputLen = GetWindowTextLength(hwnd) + 1;
+	char* inputBuffer = new char[inputLen];
+	GetWindowText(hwnd, inputBuffer, inputLen);
+	
+	string text = inputBuffer;
+	delete inputBuffer;
+
+	return text;
+}
+
 //! Returns the IP adress
 string getIP()
 {

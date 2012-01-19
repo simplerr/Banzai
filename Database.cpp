@@ -129,3 +129,11 @@ void Database::removeServer(string host)
 	mysqlpp::Query query = mConnection.query(q);
 	mysqlpp::StoreQueryResult res = query.store();
 }
+
+//! Adds a new registered user to the database.
+void Database::addUser(string name, string pass, string mail)
+{
+	string q = "INSERT INTO Users VALUES ('"+name+"', '"+pass+"', '"+mail+"', 0, 0)";
+	mysqlpp::Query query = mConnection.query(q);
+	mysqlpp::StoreQueryResult res = query.store();
+}

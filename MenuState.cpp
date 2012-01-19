@@ -19,7 +19,7 @@ void MenuState::init(Game* game)
 	setGame(game);
 
 	// Not really the center
-	Vector center(520, 250);
+	Vector center(545, 250);
 	int width = 140;
 	int height = 80;
 	int margin = 15;

@@ -11,12 +11,64 @@
 LobbyState LobbyState::mLobbyState;
 
 string getIP();
+string getText(HWND hwnd);
 
 // Used by the login dialog.
 char name[256];
 char pass[256];
 bool badLogin = false;
 bool changedState = false;
+string musername;
+
+//! Procedure for the register dialog.
+LRESULT CALLBACK RegisterDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch(Msg)
+	{
+	case WM_INITDIALOG:	{
+		SetFocus(GetDlgItem(hWndDlg, IDC_USERNAME));
+		break;
+	}
+
+	case WM_COMMAND:
+		switch(wParam)
+		{
+		case IDC_REGISTER_BTN:
+			if(gDatabase == NULL)
+				gDatabase = new Database();
+
+			// Get entered data
+			string username = getText(GetDlgItem(hWndDlg, IDC_USERNAME));
+			string password = getText(GetDlgItem(hWndDlg, IDC_PASSWORD));
+			string mail = getText(GetDlgItem(hWndDlg, IDC_MAIL));
+
+			// No empty values
+			if(username != "" && password != "" && mail != "")	{
+				// Add to DB
+				gDatabase->addUser(username, password, mail);
+				GetWindowText(GetDlgItem(hWndDlg, IDC_USERNAME), name, 255);
+				GetWindowText(GetDlgItem(hWndDlg, IDC_PASSWORD), pass, 255);
+				EndDialog(hWndDlg, 0);
+				MessageBox(0, "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", MB_ICONEXCLAMATION);
+				SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
+			}
+			else	{
+				EndDialog(hWndDlg, 0);
+				DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG2), gGame->getMainWnd(), (DLGPROC)RegisterDlgProc);
+			}
+				
+			break;
+		}
+		break;
+	case WM_CLOSE:
+		LobbyState::Instance()->changeState(MenuState::Instance());
+		EndDialog(hWndDlg, 0);
+		changedState = true;
+		break;
+	}
+
+	return 0;
+}
 
 //! Procedure for the login dialog.
 LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
@@ -52,6 +104,11 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
 			break;
+		case IDC_REGISTER:
+			// Prompt the register dialog.
+			EndDialog(hWndDlg, 0);
+			DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG2), gGame->getMainWnd(), (DLGPROC)RegisterDlgProc);
+			break;
 		}
 		break;
 	case WM_CLOSE:
@@ -74,11 +131,11 @@ void LobbyState::init(Game* game)
 	mBkgd = gGraphics->loadTexture("imgs\\bkgd.bmp");
 	mLogo = gGraphics->loadTexture("imgs\\logo.bmp");
 
-	// Promp the login dialog.
+	// Prompt the login dialog.
 	DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG1), gGame->getMainWnd(), (DLGPROC)DlgProc);
 		
 	if(!changedState)	{
-		mServerList = new ServerList(320, 240, 400, 400);
+		mServerList = new ServerList(345, 240, 400, 400);
 	}
 	else
 		changedState = false;

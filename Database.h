@@ -18,6 +18,7 @@ public:
 	bool validUser(string name, string pass);
 	void addWin(string name);
 	void addLoss(string name);
+	void addUser(string name, string pass, string mail);
 
 	int getWins(string name);
 	int getLosses(string name);
