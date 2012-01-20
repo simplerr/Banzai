@@ -1,6 +1,9 @@
 #include <string>
 #include <Windows.h>
 #include <wininet.h>
+#include <sys/types.h>
+#include <Winsock2.h>
+
 using namespace std;
 
 #pragma comment(lib, "wininet")
@@ -34,8 +37,8 @@ string getText(HWND hwnd)
 	return text;
 }
 
-//! Returns the IP adress
-string getIP()
+//! Returns the public IP adress.
+string getPublicIp()
 {
 	HINTERNET hInternet, hFile;
     DWORD rSize;
@@ -50,4 +53,17 @@ string getIP()
     InternetCloseHandle(hInternet);
 
 	return buffer;
+}
+
+//! Returns the local ip address.
+string getLocalIp()
+{
+	char buffer[256];
+	gethostname(buffer, 255);
+
+	hostent* record = gethostbyname(buffer);
+	in_addr* address=(in_addr*)record->h_addr;
+	
+	string ip = inet_ntoa(*address);
+	return ip;
 }

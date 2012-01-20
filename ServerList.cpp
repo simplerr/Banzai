@@ -6,7 +6,8 @@
 
 
 void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Arial");
-string getIP();
+string getPublicIp();
+string getLocalIp();
 
 //! Constructor
 ServerList::ServerList(int x, int y, int width, int height)
@@ -24,17 +25,21 @@ ServerList::ServerList(int x, int y, int width, int height)
 
 	// Create the buttons
 	mhRefreshButton = CreateWindow("BUTTON", "Refresh", WS_VISIBLE | WS_CHILD | WS_OVERLAPPED,
-        x+width-200, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_REFRESH_BUTTON, gGame->getAppInst(), NULL);
+        x+width-187, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_REFRESH_BUTTON, gGame->getAppInst(), NULL);
 
 	mhConnectButton = CreateWindow("BUTTON", "Connect", WS_VISIBLE | WS_CHILD | WS_OVERLAPPED,
-        x+(width-60-45), y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_CONNECT_BUTTON, gGame->getAppInst(), NULL);
+        x+width-105, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_CONNECT_BUTTON, gGame->getAppInst(), NULL);
 
 	mhHostButton = CreateWindow("BUTTON", "Host", WS_VISIBLE | WS_CHILD | WS_OVERLAPPED,
-        x+30, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_HOST_BUTTON, gGame->getAppInst(), NULL);
+        x+130, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_HOST_BUTTON, gGame->getAppInst(), NULL);
+
+	mhLanCheckBox = CreateWindow("BUTTON", "Lan", WS_VISIBLE | WS_CHILD | WS_OVERLAPPED | BS_AUTOCHECKBOX,
+        x+30, y+height-50, 70, 40, gGame->getMainWnd(), (HMENU)IDC_LAN_CHECKBOX, gGame->getAppInst(), NULL);
 
 	setFont(mhRefreshButton, 17);
 	setFont(mhConnectButton, 17);
 	setFont(mhHostButton, 17);
+	setFont(mhLanCheckBox, 17);
 	setFont(mhLabel, 23, FW_BOLD);
 
 	mX = x;
@@ -54,6 +59,7 @@ ServerList::~ServerList()
 	DestroyWindow(mhConnectButton);
 	DestroyWindow(mhHostButton);
 	DestroyWindow(mhLabel);
+	DestroyWindow(mhLanCheckBox);
 }
 
 //! Creates the list control that contains all games.
@@ -82,17 +88,18 @@ void ServerList::refresh()
 
 	for(int i = 0; i < tmp.size(); i++)
 	{
-		addServer(tmp[i].host, tmp[i].ip);
+		addServer(tmp[i].host, tmp[i].publicIp, tmp[i].localIp);
 	}
 }
 
 //! Adds a game to the list.
-void ServerList::addServer(string host, string ip)
+void ServerList::addServer(string host, string publicIp, string localIp)
 {
 	// Add new server to the server list
 	Server server;
 	server.host = host;
-	server.ip = ip;
+	server.publicIp = publicIp;
+	server.localIp = localIp;
 	mServerList.push_back(server);
 
 	// Add new item to the list box
@@ -114,30 +121,14 @@ LRESULT ServerList::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			// An item was double clicked
 			case LBN_DBLCLK:
 				{
-					// Get selected index
-					int index = SendMessage(mhList, LB_GETCURSEL, 0, 0);
-					
-					// An item must be selected
-					if(index >= 0)	{
-						// Connect to the selected server
-						LobbyState::Instance()->connectToServer(mServerList[index].ip);
-					}
+					connectButtonPressed();
 					break;	
 				}
 			}
 		}
 		else if(LOWORD(wParam) == IDC_CONNECT_BUTTON)
 		{
-			// Get selected index
-			int index = SendMessage(mhList, LB_GETCURSEL, 0, 0);
-			
-			LobbyState::Instance()->connectToServer("127.0.0.1");
-
-			// An item must be selected
-			//if(index >= 0)	{
-			//	// Connect to the selected server
-			//	LobbyState::Instance()->connectToServer(mServerList[index].ip);
-			//}
+			connectButtonPressed();
 		}
 		else if(LOWORD(wParam) == IDC_REFRESH_BUTTON)
 		{
@@ -151,4 +142,19 @@ LRESULT ServerList::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+
+void ServerList::connectButtonPressed()
+{
+	// Get selected index
+	int index = SendMessage(mhList, LB_GETCURSEL, 0, 0);
+					
+	// An item must be selected
+	if(index >= 0)	{
+		// Connect to the selected server
+		if(SendMessage(mhLanCheckBox, BM_GETSTATE,0,0) == BST_CHECKED)
+			LobbyState::Instance()->connectToServer(mServerList[index].localIp);
+		else
+			LobbyState::Instance()->connectToServer(mServerList[index].publicIp);
+	}
 }

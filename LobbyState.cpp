@@ -10,7 +10,8 @@
 
 LobbyState LobbyState::mLobbyState;
 
-string getIP();
+string getPublicIp();
+string getLocalIp();
 string getText(HWND hwnd);
 
 // Used by the login dialog.
@@ -44,15 +45,19 @@ LRESULT CALLBACK RegisterDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM l
 
 			// No empty values
 			if(username != "" && password != "" && mail != "")	{
-				// Add to DB
+				// Add to database
 				gDatabase->addUser(username, password, mail);
+
 				GetWindowText(GetDlgItem(hWndDlg, IDC_USERNAME), name, 255);
 				GetWindowText(GetDlgItem(hWndDlg, IDC_PASSWORD), pass, 255);
 				EndDialog(hWndDlg, 0);
 				MessageBox(0, "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", MB_ICONEXCLAMATION);
+
+				// Send login message, name and pass was set above
 				SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
 			}
 			else	{
+				// Close the dialog and show it again
 				EndDialog(hWndDlg, 0);
 				DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG2), gGame->getMainWnd(), (DLGPROC)RegisterDlgProc);
 			}
@@ -179,11 +184,12 @@ void LobbyState::connectToServer(string ip)
 //! Host a server.
 void LobbyState::hostServer()
 {
-	// Get the users IP
-	string ip = getIP();
+	// Get the users public and local IP
+	string publicIp = getPublicIp();
+	string localIp = getLocalIp();
 
 	// Add game to the database
-	gDatabase->addServer(mUsername, getIP());
+	gDatabase->addServer(mUsername, getPublicIp(), getLocalIp());
 
 	// Change the state
 	changeState(PlayingOnline::Instance());

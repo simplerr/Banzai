@@ -103,11 +103,13 @@ vector<Server> Database::getServers()
 	for(int i = 0; i < res.size(); i++)
 	{
 		string host = res[i]["Host"];
-		string ip = res[i]["Ip"];
+		string publicIp = res[i]["Public_Ip"];
+		string localIp = res[i]["Local_ip"];
 
 		Server server;
 		server.host = host;
-		server.ip = ip;
+		server.publicIp = publicIp;
+		server.localIp = localIp;
 		servers.push_back(server);
 	}
 
@@ -115,9 +117,9 @@ vector<Server> Database::getServers()
 }
 
 //! Adds a server to the online server table.
-void Database::addServer(string host, string ip)
+void Database::addServer(string host, string publicIp, string localIp)
 {
-	string q = "INSERT INTO Games VALUES ('"+host+"', '"+ip+"')";
+	string q = "INSERT INTO Games VALUES ('"+host+"', '"+publicIp+"', '"+localIp+"')";
 	mysqlpp::Query query = mConnection.query(q);
 	mysqlpp::StoreQueryResult res = query.store();
 }

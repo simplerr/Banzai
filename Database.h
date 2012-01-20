@@ -23,7 +23,7 @@ public:
 	int getWins(string name);
 	int getLosses(string name);
 	vector<Server> getServers();
-	void addServer(string host, string ip);
+	void addServer(string host, string publicIp, string localIp);
 	void removeServer(string host);
 private:
 	mysqlpp::Connection mConnection;

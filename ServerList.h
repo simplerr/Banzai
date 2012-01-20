@@ -16,7 +16,8 @@ public:
 	~ServerList();
 
 	void refresh();
-	void addServer(string host, string ip);
+	void addServer(string host, string publicIp, string localIp);
+	void connectButtonPressed();
 
 	LRESULT msgProc(UINT msg, WPARAM wParam, LPARAM lParam);
 private:
@@ -29,6 +30,7 @@ private:
 	HWND mhConnectButton;
 	HWND mhHostButton;
 	HWND mhLabel;
+	HWND mhLanCheckBox;
 
 	int mX, mY;
 	int mWidth, mHeight;

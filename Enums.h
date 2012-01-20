@@ -17,6 +17,7 @@ using namespace std;
 #define IDC_LOCAL_BUTTON	113
 #define IDC_HELP_BUTTON		114
 #define IDC_ABOUT_BUTTON	115
+#define IDC_LAN_CHECKBOX	116
 
 enum ActionId
 {
@@ -59,7 +60,8 @@ struct Position
 struct Server
 {
 	string host;
-	string ip;
+	string publicIp;
+	string localIp;
 };
 
 //! The result of the players action.
