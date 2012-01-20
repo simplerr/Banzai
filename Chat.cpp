@@ -3,6 +3,8 @@
 #include "Chat.h"
 #include "Enums.h"
 #include "PlayingOnline.h"
+#include "Database.h"
+#include "OnlinePlayer.h"
 #include <Windowsx.h>
 #include <Richedit.h>
 #include <Commctrl.h>
@@ -14,6 +16,8 @@ void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Ari
 
 // The default edit control procedure.
 WNDPROC DefEditProc;
+
+bool first = true;
 
 //! Adds text to a richedit control.
 /**
@@ -114,6 +118,9 @@ Chat::Chat()
 
 	// Set the default edit control proc
 	DefEditProc = (WNDPROC)SetWindowLong(mhInputBox, GWL_WNDPROC, (DWORD)inputProc);
+
+	// Add info text to the chat
+	AddText(mhChatBox, "Welcome!\nYou can write /stats to see your opponents stats.\nVisit http://simplersnet.com for rankings.", RGB(175, 77, 146));
 }
 	
 //! Destructor.
@@ -123,16 +130,23 @@ Chat::~Chat()
 	DestroyWindow(mhChatBox);
 	DestroyWindow(mhInputBox);
 	DestroyWindow(mhSendButton);
+	first = true;
 }
 
 //! Adds a message to the chat.
 void Chat::addMessage(string from, string message)
 {
-	string name = "<";
+	string name;
+	if(first)
+		name = "\n<";
+	else
+		name = "<";
+
 	name += from;
 	name += ">: ";
 	AddText(mhChatBox, (char*)name.c_str(), RGB(180, 0, 0));
 	AddText(mhChatBox, (char*)message.c_str(), RGB(0, 0, 0));
+	first = false;
 }
 	
 //! Send message to opponent and add it to your own chat.
@@ -142,22 +156,69 @@ void Chat::sendChatMessage()
 	int inputLen = GetWindowTextLength(mhInputBox) + 1;
 	char* inputBuffer = new char[inputLen];
 	GetWindowText(mhInputBox, inputBuffer, inputLen);
-	string name = "<";
-	name += PlayingOnline::Instance()->getPlayerName();
-	name += ">: ";
-	AddText(mhChatBox, (char*)name.c_str(), RGB(0, 180, 0));
-	AddText(mhChatBox, inputBuffer, RGB(0, 0, 0));
 
-	SetWindowText(mhInputBox, "");
-	SendMessage(mhInputBox, EM_SETSEL, 0, MAKELONG(0, 0));	// NOTE: Not needed any more.
+	// Display stats
+	string input = string(inputBuffer);
+	if(input.find("/stats", 0) == 0)//string::npos)//input.compare("/stats") == 0)
+	{
+		string opponent = PlayingOnline::Instance()->getPlayer()->getOpponent();
 
-	// Send the message to your opponent.
-	RakNet::BitStream bitstream;
-	bitstream.Write((unsigned char)ID_MESSAGE_SENT);
-	bitstream.Write(PlayingOnline::Instance()->getPlayerName().c_str());
-	bitstream.Write(inputBuffer);
+		if(opponent != "#NOVALUE")	{
+			string tmp;
+			if(first)
+			 tmp = "\n";
 
-	PlayingOnline::Instance()->getPeer()->Send(&bitstream, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+			tmp += opponent;
+			tmp += "'s stats:\n";
+			AddText(mhChatBox, (char*)tmp.c_str(), RGB(177, 77, 146));
+
+			char buffer[10];
+			tmp = "Wins: ";
+			tmp += itoa(gDatabase->getWins(opponent), buffer, 10);
+			tmp += "\n";
+			AddText(mhChatBox, (char*)tmp.c_str(), RGB(0, 0, 0));
+
+			tmp = "Losses: ";
+			tmp += itoa(gDatabase->getLosses(opponent), buffer, 10);
+			tmp += "\n";
+			AddText(mhChatBox, (char*)tmp.c_str(), RGB(0, 0, 0));
+		}
+		else	{
+			if(first)
+				AddText(mhChatBox, "\nNo opponent yet.\n", RGB(177, 77, 146));
+			else
+				AddText(mhChatBox, "No opponent yet.\n", RGB(177, 77, 146));
+		}
+
+		SetWindowText(mhInputBox, "");
+		SendMessage(mhInputBox, EM_SETSEL, 0, MAKELONG(0, 0));	// NOTE: Not needed any more.
+	}
+	else
+	{
+		string name;
+		if(first)
+			name = "\n<";
+		else
+			name = "<";
+
+		name += PlayingOnline::Instance()->getPlayerName();
+		name += ">: ";
+		AddText(mhChatBox, (char*)name.c_str(), RGB(0, 180, 0));
+		AddText(mhChatBox, inputBuffer, RGB(0, 0, 0));
+
+		SetWindowText(mhInputBox, "");
+		SendMessage(mhInputBox, EM_SETSEL, 0, MAKELONG(0, 0));	// NOTE: Not needed any more.
+
+		// Send the message to your opponent.
+		RakNet::BitStream bitstream;
+		bitstream.Write((unsigned char)ID_MESSAGE_SENT);
+		bitstream.Write(PlayingOnline::Instance()->getPlayerName().c_str());
+		bitstream.Write(inputBuffer);
+
+		PlayingOnline::Instance()->getPeer()->Send(&bitstream, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+	}
+
+	first = false;
 }
 
 //! The message proc for the chat.

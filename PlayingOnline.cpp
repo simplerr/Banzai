@@ -123,3 +123,8 @@ RakNet::RakPeerInterface* PlayingOnline::getPeer()
 {
 	return mPeer->getPeer();
 }
+
+OnlinePlayer* PlayingOnline::getPlayer()
+{
+	return mPlayer;
+}

@@ -27,7 +27,6 @@ private:
 	HWND mhChatBox;
 	HWND mhInputBox;
 	HWND mhSendButton;
-
 };
 
 #endif

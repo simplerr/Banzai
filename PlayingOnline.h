@@ -35,6 +35,7 @@ public:
 	RakNet::RakPeerInterface*	getPeer();
 
 	string getPlayerName();
+	OnlinePlayer* getPlayer();
 	void setPlayerName(string name);
 
 	bool startServer();
