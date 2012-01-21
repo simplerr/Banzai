@@ -19,6 +19,19 @@ using namespace std;
 #define IDC_ABOUT_BUTTON	115
 #define IDC_LAN_CHECKBOX	116
 
+#define LOGIN_SOUND			"sounds\\connect.wav"
+#define BAD_LOGIN_SOUND		"sounds\\bad_login.wav"
+#define GAME_HOSTED_SOUND	"sounds\\game_hosted.wav"
+#define NEW_GAME_SOUND		"sounds\\new_game.wav"
+#define MOVE1_SOUND			"sounds\\move1.wav"
+#define MOVE2_SOUND			"sounds\\move2.wav"
+#define CAPTURE1_SOUND		"sounds\\capture1.wav"
+#define CAPTURE2_SOUND		"sounds\\capture2.wav"
+#define CAPTURE3_SOUND		"sounds\\capture3.wav"
+#define CASTLE_SOUND		"sounds\\castling.wav"
+#define ILLEGAL_SOUND		"sounds\\illegal.wav"
+#define OPPONENT_LEAVE_SOUND "sounds\\user_disconnect.wav"
+
 enum ActionId
 {
 	WRONG_COLOR,

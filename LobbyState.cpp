@@ -7,6 +7,7 @@
 #include "PlayingOnline.h"
 #include "MenuState.h"
 #include "Input.h"
+#include "Sound.h"
 
 LobbyState LobbyState::mLobbyState;
 
@@ -51,7 +52,9 @@ LRESULT CALLBACK RegisterDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM l
 				GetWindowText(GetDlgItem(hWndDlg, IDC_USERNAME), name, 255);
 				GetWindowText(GetDlgItem(hWndDlg, IDC_PASSWORD), pass, 255);
 				EndDialog(hWndDlg, 0);
-				MessageBox(0, "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", MB_ICONEXCLAMATION);
+				MessageBox(0, "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", 0);
+
+				gSound->playEffect(LOGIN_SOUND);
 
 				// Send login message, name and pass was set above
 				SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
@@ -59,6 +62,7 @@ LRESULT CALLBACK RegisterDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM l
 			else	{
 				// Close the dialog and show it again
 				EndDialog(hWndDlg, 0);
+				gSound->playEffect(BAD_LOGIN_SOUND);
 				DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG2), gGame->getMainWnd(), (DLGPROC)RegisterDlgProc);
 			}
 				
@@ -195,6 +199,9 @@ void LobbyState::hostServer()
 	changeState(PlayingOnline::Instance());
 	PlayingOnline::Instance()->startServer();
 	PlayingOnline::Instance()->setPlayerName(mUsername);
+
+	// Sound
+	gSound->playEffect(GAME_HOSTED_SOUND);
 }
 
 //! Message procedure.
@@ -205,13 +212,18 @@ LRESULT LobbyState::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		case IDC_TRY_LOGIN:
 		// Invalid player
 		if(!gDatabase->validUser(name, pass) && strcmp(pass, "") != 0)	{
+			gSound->playEffect(BAD_LOGIN_SOUND);
 			badLogin = true;
 			DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG1), gGame->getMainWnd(), (DLGPROC)DlgProc);
 		}	
-		else if(strcmp(pass, "") == 0)	// Guest player
+		else if(strcmp(pass, "") == 0)	{	// Guest player
 			mUsername = string(name)+" (guest)";	
-		else	// Registered player
+			gSound->playEffect(LOGIN_SOUND);
+		}
+		else {	// Registered player
 			mUsername = string(name);
+			gSound->playEffect(LOGIN_SOUND);
+		}
 
 		break;
 	}

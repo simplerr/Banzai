@@ -17,6 +17,7 @@ void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Ari
 // The default edit control procedure.
 WNDPROC DefEditProc;
 
+// Ugly hack... NOTE: HACKCKKC
 bool first = true;
 
 //! Adds text to a richedit control.

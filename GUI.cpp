@@ -9,6 +9,7 @@
 #include "PiecesCaptured.h"
 #include "OnlinePlayer.h"
 #include "Database.h"
+#include "Sound.h"
 
 void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Arial");
 
@@ -153,6 +154,7 @@ void GUI::displayRematchRequest()
 	// Check answer
 	if(msgId == IDYES)	{
 		mPlayer->restartMatch();
+		gSound->playEffect(NEW_GAME_SOUND);
 		bitstream.Write((unsigned char)ID_ACCEPT_REMATCH);
 	}
 	else if(msgId = IDNO)

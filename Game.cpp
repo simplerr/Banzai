@@ -8,6 +8,7 @@
 #include "common\Graphics.h"
 #include "common\DirectInput.h"
 
+#include "Sound.h"
 #include "Game.h"
 #include "Board.h"
 #include "Piece.h"
@@ -19,6 +20,7 @@
 #include "Database.h"
 #include "PlayingOnline.h"
 
+
 // Set the globals
 Runnable*			gGame		= 0;
 IDirect3DDevice9*	gd3dDevice	= 0;
@@ -26,6 +28,7 @@ Graphics*			gGraphics	= 0;
 Input*				gInput		= 0;
 Textures*			gTextures	= 0;
 Database*			gDatabase	= 0;
+Sound*				gSound		= 0;
 
 // Use Windows 7 looking controls.
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
@@ -59,6 +62,7 @@ Game::Game(HINSTANCE hInstance, std::string caption, int width, int height, D3DD
 {
 	gGraphics = new Graphics();
 	gTextures = new Textures();
+	gSound = new Sound();
 	mCamera = new Camera(DIMENSION_3D, 0, 0, getScreenWidth(), getScreenHeight());
 	mCamera->setPosition(0, 0, 500);
 	mCamera->setTarget(0, 0, 0);
@@ -75,6 +79,7 @@ Game::~Game()
 	delete gInput;
 	delete gTextures;
 	delete gDatabase;
+	delete gSound;
 }
 
 //! Inits all game related content.

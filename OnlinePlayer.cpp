@@ -18,6 +18,8 @@
 #include "Database.h"
 #include "Enums.h"
 #include "GUI.h"
+#include "Sound.h"
+#include <time.h>
 
 void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Arial");
 
@@ -30,6 +32,7 @@ OnlinePlayer::OnlinePlayer(Color color) : Player(color)
 	mCheckMate		= false;
 	mWaitingOnAnswer= false;
 	setBoard(new Board(80));
+	srand(time(0));
 }
 
 //! Destructor
@@ -94,6 +97,8 @@ void OnlinePlayer::update(float dt)
 				// Is now waiting on move
 				mWaitingOnMove = true;
 
+				pieceMovedSound();
+
 				// Checkmate? NOTE: Important to check after the move is sent to opponent
 				if(getBoard()->checkMate(Color(getColor()*-1)))	{
 					mCheckMate = true;
@@ -111,6 +116,7 @@ void OnlinePlayer::update(float dt)
 				setInvalid(action.position.x, action.position.y);
 				setSelected(-10, -10);
 				mGui->setStatus("Invalid position!", RED, 2.0f);
+				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Wrong color
 			case WRONG_COLOR:
@@ -119,12 +125,14 @@ void OnlinePlayer::update(float dt)
 					mGui->setStatus("You are white", RED, 2.0f);
 				else
 					mGui->setStatus("You are black", RED, 2.0f);
+				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Gets checked
 			case GETS_CHECKED:
 				setInvalid(action.position.x, action.position.y);
 				setSelected(-10, -10);
 				mGui->setStatus("Check!", RED, 2.0f);
+				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Piece was selected
 			case PIECE_SELECTED:
@@ -135,8 +143,10 @@ void OnlinePlayer::update(float dt)
 	}
 	// Promt "Not your turn" if the player tries to move when he's waiting on the other player to move
 	else if(!mWaitingForOpponent && !mCheckMate && mWaitingOnMove)	{
-		if(gInput->keyPressed(VK_LBUTTON) && gInput->mousePosition().x < 740)
+		if(gInput->keyPressed(VK_LBUTTON) && gInput->mousePosition().x < 740)	{
 			mGui->setStatus("Not your turn!", RED, 2.0f);
+			gSound->playEffect(ILLEGAL_SOUND);
+		}
 	}
 }
 
@@ -159,10 +169,19 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 	if(piece != NULL)	{
 		mGui->addCapture(piece->getColor(), piece->getType());
 		getBoard()->removePiece(piece);
+		pieceCapturedSound();
 	}
+	else
+		pieceMovedSound();
 
 	// Get the piece that moved
-	getBoard()->getPieceAt(from.x, from.y)->setPos(to.x, to.y);
+	Piece* movedPiece = getBoard()->getPieceAt(from.x, from.y);
+
+	// Castling?
+	if(movedPiece->getType() == KING && abs(from.x - to.x) == 2)
+		gSound->playEffect(CASTLE_SOUND);
+
+	movedPiece->setPos(to.x, to.y);
 
 	// No longer waiting for the opponent to do a move
 	mWaitingOnMove = false;
@@ -176,6 +195,8 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 	}
 	else
 		mGui->setStatus("Your turn!", GREEN, 300.0f);
+
+	
 }
 
 void OnlinePlayer::handleCastling(Piece* king)
@@ -208,8 +229,10 @@ void OnlinePlayer::handleCastling(Piece* king)
 			from = Position(7, 0);
 			to = Position(5, 0);
 		}
-	}
-	
+	}	
+
+	gSound->playEffect(CASTLE_SOUND);
+
 	// Setup and send the message
 	bitstream.Write(from.x);
 	bitstream.Write(from.y);
@@ -221,6 +244,7 @@ void OnlinePlayer::handleCastling(Piece* king)
 void OnlinePlayer::handleCapture(Color color, PieceType type)
 {
 	mGui->addCapture(color, type);
+	pieceCapturedSound();
 }
 
 //! Ask the opponent for a rematch.
@@ -292,4 +316,25 @@ bool OnlinePlayer::getCheckMate()
 bool OnlinePlayer::waitingOnMove()
 {
 	return mWaitingOnMove;
+}
+
+void OnlinePlayer::pieceMovedSound()
+{
+	int random = rand() % 2;
+	if(random == 0)
+		gSound->playEffect(MOVE1_SOUND);
+	else
+		gSound->playEffect(MOVE2_SOUND);
+}
+	
+void OnlinePlayer::pieceCapturedSound()
+{
+	int random = rand() % 3;
+
+	if(random == 0)
+		gSound->playEffect(CAPTURE1_SOUND);
+	else if(random == 3)
+		gSound->playEffect(CAPTURE2_SOUND);
+	else if(random == 2)
+		gSound->playEffect(CAPTURE3_SOUND);
 }

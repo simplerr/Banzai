@@ -219,6 +219,7 @@
     <ClCompile Include="Queen.cpp" />
     <ClCompile Include="Rook.cpp" />
     <ClCompile Include="ServerList.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="StatusText.cpp" />
     <ClCompile Include="Textures.cpp" />
   </ItemGroup>
@@ -410,6 +411,7 @@
     <ClInclude Include="resource1.h" />
     <ClInclude Include="Rook.h" />
     <ClInclude Include="ServerList.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="StatusText.h" />
     <ClInclude Include="Textures.h" />
   </ItemGroup>

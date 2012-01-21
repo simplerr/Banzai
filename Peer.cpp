@@ -7,6 +7,7 @@
 #include "PlayingOnline.h"
 #include "GUI.h"
 #include "Chat.h"
+#include "Sound.h"
 
 //! Constructor.
 Peer::Peer()
@@ -115,6 +116,7 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 			mPlayer->restartMatch();
 		break;
 	case ID_DECLINE_REMATCH:
+		gSound->playEffect(OPPONENT_LEAVE_SOUND);
 		mGui->displayRematchDecline();
 		PlayingOnline::Instance()->stateChange();
 		break;
@@ -122,9 +124,11 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 		mPlayer->setWaitingOnAnswer(false);
 		// Start new game.
 		mPlayer->restartMatch();
+		gSound->playEffect(NEW_GAME_SOUND);
 		break;
 	}
 	case ID_LEFT_GAME:
+		gSound->playEffect(OPPONENT_LEAVE_SOUND);
 		mGui->displayOpponentLeft();
 		PlayingOnline::Instance()->stateChange();
 		return true;
@@ -151,6 +155,10 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 			bitstream.Write(mPlayer->getName().c_str());
 			mPeer->Send(&bitstream, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 		}
+
+		// Sound
+		gSound->playEffect(NEW_GAME_SOUND);
+
 		break;
 	}
 	case ID_SENT_APPLAUD	:	{
