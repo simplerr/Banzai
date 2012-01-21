@@ -22,7 +22,7 @@ GUI::GUI()
 	mOpponentLogo	=	gGraphics->loadTexture("imgs\\opponent_logo.bmp");
 
 	// Create the status text
-	mStatusText		=	StatusText("Invalid position!", 280, 328, 0.0f);
+	mStatusText		=	StatusText("Invalid position!", 675, 380, 0.0f);
 
 	// Create components.
 	mPiecesCaptured =	new PiecesCaptured(700, 80);

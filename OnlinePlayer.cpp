@@ -114,7 +114,6 @@ void OnlinePlayer::update(float dt)
 				setInvalid(action.position.x, action.position.y);
 				setSelected(-10, -10);
 				mGui->setStatus("Invalid position!", RED, 2.0f);
-				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Wrong color
 			case WRONG_COLOR:
@@ -123,14 +122,12 @@ void OnlinePlayer::update(float dt)
 					mGui->setStatus("You are white", RED, 2.0f);
 				else
 					mGui->setStatus("You are black", RED, 2.0f);
-				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Gets checked
 			case GETS_CHECKED:
 				setInvalid(action.position.x, action.position.y);
 				setSelected(-10, -10);
 				mGui->setStatus("Check!", RED, 2.0f);
-				gSound->playEffect(ILLEGAL_SOUND);
 				break;
 			// Piece was selected
 			case PIECE_SELECTED:

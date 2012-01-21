@@ -27,9 +27,6 @@ public:
 	void addCapturedPiece(Color color, PieceType type);
 	void displayCheckMate();
 
-	void pieceMovedSound();
-	void pieceCapturedSound();
-
 	static LocalState* Instance() {
 		return &mLocalState;
 	}

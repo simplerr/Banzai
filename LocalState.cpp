@@ -21,10 +21,10 @@ void LocalState::init(Game* game)
 	mBkgd			= gGraphics->loadTexture("imgs\\bkgd.bmp");
 	mGreyBkgd		= gGraphics->loadTexture("imgs\\grey_bkgd.bmp");
 
-	mBoard			= new Board(90);
+	mBoard			= new Board(80);
 	mActivePlayer	= new LocalPlayer(WHITE);
 	mPlayer2		= new LocalPlayer(BLACK);
-	mPiecesCaptured = new PiecesCaptured(800, 50);
+	mPiecesCaptured = new PiecesCaptured(700, 40);
 
 	// Both players uses the same board
 	mActivePlayer->setBoard(mBoard);
@@ -32,8 +32,8 @@ void LocalState::init(Game* game)
 	mSelectedPiece	= NULL;
 
 	// Create the status text
-	mStatusText		=	StatusText("Invalid position!", 280, 328, 0.0f);
-	
+	mStatusText		=	StatusText("Invalid position!", 675, 220, 0.0f);
+	gSound->playEffect(NEW_GAME_SOUND);
 }
 
 void LocalState::cleanup()
@@ -75,7 +75,6 @@ void LocalState::update(double dt)
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
 			mActivePlayer->setSelected(-10, -10);
 			mStatusText.setText("Invalid position!", RED, 2.0f);
-			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case WRONG_COLOR:
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
@@ -83,13 +82,11 @@ void LocalState::update(double dt)
 				mStatusText.setText("You are white", RED, 2.0f);
 			else
 				mStatusText.setText("You are black", RED, 2.0f);
-			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case GETS_CHECKED:
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
 			mActivePlayer->setSelected(-10, -10);
 			mStatusText.setText("Check!", RED, 2.0f);
-			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case PIECE_SELECTED:
 			mActivePlayer->setSelected(actionResult.position.x, actionResult.position.y);
@@ -113,7 +110,9 @@ void LocalState::draw()
 	mStatusText.draw();
 
 	// Draw the captured pieces and a background behind them
-	gGraphics->drawTexture(mGreyBkgd, 965, 115, 377, 190);
+
+	// Gray backround behind the captured pieces
+	gGraphics->drawTexture(mGreyBkgd, 865, 115, 377, 190);
 	mPiecesCaptured->draw();
 }
 
@@ -145,30 +144,11 @@ void LocalState::displayCheckMate()
 			mActivePlayer = mPlayer2;
 			mPlayer2 = tmp;
 		}
+
+		gSound->playEffect(NEW_GAME_SOUND);
 	}
 	else	{
 		// No - change state
 		changeState(MenuState::Instance());
 	}
-}
-
-void LocalState::pieceMovedSound()
-{
-	int random = rand() % 2;
-	if(random == 0)
-		gSound->playEffect(MOVE1_SOUND);
-	else
-		gSound->playEffect(MOVE2_SOUND);
-}
-	
-void LocalState::pieceCapturedSound()
-{
-	int random = rand() % 3;
-
-	if(random == 0)
-		gSound->playEffect(CAPTURE1_SOUND);
-	else if(random == 3)
-		gSound->playEffect(CAPTURE2_SOUND);
-	else if(random == 2)
-		gSound->playEffect(CAPTURE3_SOUND);
 }

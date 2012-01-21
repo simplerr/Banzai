@@ -66,6 +66,7 @@ ActionResult Player::performAction()
 			if(piece->getColor() != getColor())	{
 				// Return wrong color msg
 				action = ActionResult(WRONG_COLOR, pos);
+				gSound->playEffect(ILLEGAL_SOUND);
 			}
 			else	{
 				mSelectedPiece = piece;
@@ -128,6 +129,7 @@ ActionResult Player::performAction()
 					else
 						action = ActionResult(PIECE_SELECTED, Position(-10, -10));
 				}
+				gSound->playEffect(ILLEGAL_SOUND);
 				mSelectedPiece = NULL;
 			}
 		}

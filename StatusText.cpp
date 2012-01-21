@@ -32,9 +32,9 @@ void StatusText::draw()
 {
 	if(mTime > 0)	{
 		if(mColor == RED)
-			gGraphics->drawBigDxFont(mText, 675, 380, 0xffff0000);
+			gGraphics->drawBigDxFont(mText, mPos.x, mPos.y, 0xffff0000);
 		else if(mColor == GREEN)
-			gGraphics->drawBigDxFont(mText, 675, 380, 0xff00ff00);
+			gGraphics->drawBigDxFont(mText, mPos.x, mPos.y, 0xff00ff00);
 	}
 }
 	
