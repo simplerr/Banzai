@@ -123,3 +123,14 @@ LRESULT Game::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 
 	return result;
 }
+
+void Game::onLostDevice()
+{
+	gGraphics->onLostDevice();
+	mGfxStats->onLostDevice();
+}
+void Game::onResetDevice()
+{
+	gGraphics->onResetDevice();
+	mGfxStats->onResetDevice();
+}

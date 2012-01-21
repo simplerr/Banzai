@@ -52,7 +52,7 @@ LRESULT CALLBACK RegisterDlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM l
 				GetWindowText(GetDlgItem(hWndDlg, IDC_USERNAME), name, 255);
 				GetWindowText(GetDlgItem(hWndDlg, IDC_PASSWORD), pass, 255);
 				EndDialog(hWndDlg, 0);
-				MessageBox(0, "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", 0);
+				MessageBox(gGame->getMainWnd(), "Successfully registered!\nYou will automaticly get logged in on your new account.", "Success!", 0);
 
 				gSound->playEffect(LOGIN_SOUND);
 
@@ -168,9 +168,9 @@ void LobbyState::update(double dt)
 void LobbyState::draw()
 {
 	// Draw the background and logo
-	gGraphics->drawTexture(mBkgd, 600, 400, 1200, 800);	
+	gGraphics->drawTexture(mBkgd, 520, 400, 1200, 800);
 	gGraphics->drawTexture(mLogo, 1090/2, 120, 673, 176);
-	gGraphics->drawText("by simpler", 1080, 720, TextType::SMALL_DX);
+	gGraphics->drawText("by simpler", 970, 640, TextType::SMALL_DX);
 }
 
 //! Connect to a server.

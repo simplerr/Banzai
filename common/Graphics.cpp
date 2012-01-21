@@ -599,3 +599,19 @@ void Graphics::drawLine(Vector start, Vector end, D3DCOLOR color)
 		
 	gd3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, 2);			
 }
+
+void Graphics::onLostDevice()
+{
+	mFont->OnLostDevice();
+	mBigFont->OnLostDevice();
+	mSpriteHandler->OnLostDevice();
+	mCustomFont->onLostDevice();
+}
+
+void Graphics::onResetDevice()
+{
+	mFont->OnResetDevice();
+	mBigFont->OnResetDevice();
+	mSpriteHandler->OnResetDevice();
+	mCustomFont->onResetDevice();
+}

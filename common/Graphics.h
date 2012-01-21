@@ -75,6 +75,9 @@ public:
 
 	//! Draws a custom font.
 	void drawCustomFont(string text, int x, int y, int size = 8, DWORD color = 0xff000000);
+
+	void onLostDevice();
+	void onResetDevice();
 private:
 	IDirect3DVertexBuffer9* mVB_texture;
 	IDirect3DVertexBuffer9* mVB_Rect;

@@ -65,3 +65,13 @@ void Font::draw(string text, int x, int y, int size, DWORD color)
 
 	HR(mEffect->End());
 }
+
+void Font::onLostDevice()
+{
+	mEffect->OnLostDevice();
+}
+	
+void Font::onResetDevice()
+{
+	mEffect->OnResetDevice();
+}

@@ -96,7 +96,7 @@ void LocalState::update(double dt)
 
 	// Ask the user if he really wants to leave when after he pressed enter
 	if(gInput->keyPressed(VK_ESCAPE))	{
-		int result = MessageBox(0, "Are you sure you want to exit the match?", "Leaving match", MB_YESNO | MB_ICONQUESTION);
+		int result = MessageBox(gGame->getMainWnd(), "Are you sure you want to exit the match?", "Leaving match", MB_YESNO | MB_ICONQUESTION);
 		if(result == IDYES)
 			changeState(MenuState::Instance());
 	}
@@ -132,7 +132,7 @@ void LocalState::displayCheckMate()
 		buffer = "Black wins!\nDo you want to play again?";
 
 	// Promt message box
-	int result = MessageBox(0, buffer.c_str(), "Check mate!", MB_YESNO | MB_ICONQUESTION);
+	int result = MessageBox(gGame->getMainWnd(), buffer.c_str(), "Check mate!", MB_YESNO | MB_ICONQUESTION);
 
 	// Rematch?
 	if(result == IDYES)	{

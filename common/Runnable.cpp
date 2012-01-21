@@ -64,7 +64,7 @@ bool Runnable::initWindow()
 	RECT R = {0, 0, mWidth, mHeight};
 	AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 	mhMainWindow = CreateWindow("D3DWndClassName", mCaption.c_str(), 
-		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, GetSystemMetrics(SM_CXSCREEN)/2-(mWidth/2),
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPCHILDREN, GetSystemMetrics(SM_CXSCREEN)/2-(mWidth/2),
 		GetSystemMetrics(SM_CYSCREEN)/2-(mHeight/2), mWidth, mHeight, 
 		0, 0, mhInstance, 0); 
 
@@ -282,11 +282,8 @@ LRESULT Runnable::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 				if( minOrMaxed && md3dPP.Windowed )
 				{
 					onLostDevice();
-					HR(gd3dDevice->Reset(&md3dPP));
+					//HR(gd3dDevice->Reset(&md3dPP));
 					onResetDevice();
-				}
-				else
-				{
 				}
 				minOrMaxed = false;
 			}
@@ -301,7 +298,7 @@ LRESULT Runnable::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		md3dPP.BackBufferWidth  = clientRect.right;
 		md3dPP.BackBufferHeight = clientRect.bottom;
 		onLostDevice();
-		HR(gd3dDevice->Reset(&md3dPP));
+		//HR(gd3dDevice->Reset(&md3dPP));
 		onResetDevice();
 
 		return 0;
@@ -320,16 +317,6 @@ LRESULT Runnable::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		return 0;
 	case WM_COMMAND:
-		switch ( LOWORD(wParam) ) 
-		{
-		case 1:
-			MessageBox(0, "1!", 0, 0);
-			break;
-		case 2:
-			MessageBox(0, "2!", 0, 0);
-			break;
-		}
-
 		return 0;
 	}
 	return DefWindowProc(mhMainWindow, msg, wParam, lParam);
@@ -387,7 +374,7 @@ int	Runnable::getScreenHeight()
 	return mHeight;
 }
 void showMsg(std::string msg)	{
-	MessageBox(0, msg.c_str(), 0, 0);
+	MessageBox(gGame->getMainWnd(), msg.c_str(), 0, 0);
 }
 
 void Runnable::setRenderStates()

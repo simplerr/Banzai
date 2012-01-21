@@ -16,7 +16,7 @@ Textures::Textures()
 	mTextures[TextureKey(KNIGHT, BLACK)]	=	gGraphics->loadTexture("imgs\\black_knight.bmp");	// 2
 	mTextures[TextureKey(BISHOP, WHITE)]	=	gGraphics->loadTexture("imgs\\white_bishop.bmp");	// 2
 	mTextures[TextureKey(BISHOP, BLACK)]	=	gGraphics->loadTexture("imgs\\black_bishop.bmp");	// 3
-	mTextures[TextureKey(ROOK, WHITE)]		=	gGraphics->loadTexture("imgs\\white_rook.bmp");		// 3
+	mTextures[TextureKey(ROOK, WHITE)]		=	gGraphics->loadTexture("imgs\\white_rook.png");		// 3
 	mTextures[TextureKey(ROOK, BLACK)]		=	gGraphics->loadTexture("imgs\\black_rook.bmp");		// 4
 	mTextures[TextureKey(QUEEN, WHITE)]		=	gGraphics->loadTexture("imgs\\white_queen.bmp");	// 4
 	mTextures[TextureKey(QUEEN, BLACK)]		=	gGraphics->loadTexture("imgs\\black_queen.bmp");	// 5

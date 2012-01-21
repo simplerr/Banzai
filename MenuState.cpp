@@ -66,7 +66,7 @@ void MenuState::draw()
 {
 	gGraphics->drawTexture(mBkgd, 520, 400, 1200, 800);
 	gGraphics->drawTexture(mLogo, 1090/2, 120, 673, 176);
-	gGraphics->drawText("by simpler", 1080, 720, TextType::SMALL_DX);
+	gGraphics->drawText("by simpler", 970, 640, TextType::SMALL_DX);
 
 	if(mLobbyDelay == 1)
 		mLobbyDelay++;
@@ -88,7 +88,7 @@ LRESULT MenuState::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			changeState(LocalState::Instance());
 			break;
 		case IDC_ABOUT_BUTTON:
-			MessageBox(0, "You can visit my homepage at http://simplersnet.com \n\nThanks for playing!\n\nCheers,\nsimpler"
+			MessageBox(gGame->getMainWnd(), "You can visit my homepage at http://simplersnet.com \n\nGame coded in C++ with DirectX for graphics.\n\nThanks for playing!\n\nCheers,\nsimpler"
 				, "Banzai!", 0);
 			break;
 		}

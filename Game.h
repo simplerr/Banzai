@@ -34,6 +34,9 @@ public:
 
 	void changeState(GameState* state);
 	LRESULT msgProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+	void onLostDevice();
+	void onResetDevice();
 private:
 	Camera*		mCamera;
 	GfxStats*	mGfxStats;

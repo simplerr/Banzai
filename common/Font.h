@@ -14,6 +14,9 @@ public:
 
 	bool loadFont(string source);
 	void draw(string text, int x, int y, int size = 10, DWORD color = 0xffffffff);
+
+	void onLostDevice();
+	void onResetDevice();
 private:
 	IDirect3DTexture9* mTexture;
 	string mCharacters;

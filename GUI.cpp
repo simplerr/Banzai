@@ -123,7 +123,7 @@ void GUI::displayCheckMate(bool won)
 	if(!won)
 		text = "You were defeated!\nDo you want to offer a rematch?";
 
-	int msgId = MessageBox(0, text.c_str(), title.c_str(), MB_ICONASTERISK  | MB_YESNOCANCEL);
+	int msgId = MessageBox(gGame->getMainWnd(), text.c_str(), title.c_str(), MB_ICONASTERISK  | MB_YESNOCANCEL);
 
 	if(msgId == IDYES)	{
 		mPlayer->requestRematch();
@@ -135,7 +135,7 @@ void GUI::displayCheckMate(bool won)
 //! Displays a opponent left game message.
 bool GUI::displayOpponentLeft()
 {
-	int msgId = MessageBox(0, "Your opponent left the game.\nGo back to the main menu?", "Opponent left", MB_ICONEXCLAMATION | MB_OK);
+	int msgId = MessageBox(gGame->getMainWnd(), "Your opponent left the game.\nGo back to the main menu?", "Opponent left", MB_ICONEXCLAMATION | MB_OK);
 
 	return true;
 }
@@ -149,7 +149,7 @@ void GUI::displayRematchRequest()
 	string text = "Your opponent is offering you a rematch\nDo you accept it?";
 
 	// Get answer
-	int msgId = MessageBox(0, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_YESNOCANCEL);
+	int msgId = MessageBox(gGame->getMainWnd(), text.c_str(), title.c_str(), MB_ICONQUESTION | MB_YESNOCANCEL);
 
 	// Check answer
 	if(msgId == IDYES)	{
@@ -208,7 +208,7 @@ void GUI::clearStats()
 //! Display a rematch decline message.
 void GUI::displayRematchDecline()
 {
-	MessageBox(0, "Your opponent denied the rematch request.\nGo back to the main menu?", "Rematch denied", MB_ICONEXCLAMATION | MB_OK);
+	MessageBox(gGame->getMainWnd(), "Your opponent denied the rematch request.\nGo back to the main menu?", "Rematch denied", MB_ICONEXCLAMATION | MB_OK);
 }
 
 //! Reset the captured pieces.
@@ -230,7 +230,7 @@ LRESULT GUI::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		if(wParam == IDC_RESIGN_BUTTON)
 		{
 			// Do the user really want to leave?
-			int answer = MessageBox(0, "Are you sure you want to leave?", "Leaving game", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1);
+			int answer = MessageBox(gGame->getMainWnd(), "Are you sure you want to leave?", "Leaving game", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1);
 
 			if(answer == IDYES)	{
 				// Tell the opponent that you left.
