@@ -97,8 +97,6 @@ void OnlinePlayer::update(float dt)
 				// Is now waiting on move
 				mWaitingOnMove = true;
 
-				pieceMovedSound();
-
 				// Checkmate? NOTE: Important to check after the move is sent to opponent
 				if(getBoard()->checkMate(Color(getColor()*-1)))	{
 					mCheckMate = true;
@@ -166,20 +164,19 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 {
 	// Get the piece perhaps gets captured
 	Piece* piece = getBoard()->getPieceAt(to.x, to.y);
+	Piece* movedPiece = getBoard()->getPieceAt(from.x, from.y);
 	if(piece != NULL)	{
 		mGui->addCapture(piece->getColor(), piece->getType());
 		getBoard()->removePiece(piece);
 		pieceCapturedSound();
 	}
-	else
-		pieceMovedSound();
-
-	// Get the piece that moved
-	Piece* movedPiece = getBoard()->getPieceAt(from.x, from.y);
-
-	// Castling?
-	if(movedPiece->getType() == KING && abs(from.x - to.x) == 2)
-		gSound->playEffect(CASTLE_SOUND);
+	else	{
+		// Castling?
+		if(movedPiece->getType() == KING && abs(from.x - to.x) == 2)
+			gSound->playEffect(CASTLE_SOUND);
+		else
+			pieceMovedSound();
+	}
 
 	movedPiece->setPos(to.x, to.y);
 
@@ -195,8 +192,6 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 	}
 	else
 		mGui->setStatus("Your turn!", GREEN, 300.0f);
-
-	
 }
 
 void OnlinePlayer::handleCastling(Piece* king)
@@ -230,8 +225,6 @@ void OnlinePlayer::handleCastling(Piece* king)
 			to = Position(5, 0);
 		}
 	}	
-
-	gSound->playEffect(CASTLE_SOUND);
 
 	// Setup and send the message
 	bitstream.Write(from.x);
@@ -316,25 +309,4 @@ bool OnlinePlayer::getCheckMate()
 bool OnlinePlayer::waitingOnMove()
 {
 	return mWaitingOnMove;
-}
-
-void OnlinePlayer::pieceMovedSound()
-{
-	int random = rand() % 2;
-	if(random == 0)
-		gSound->playEffect(MOVE1_SOUND);
-	else
-		gSound->playEffect(MOVE2_SOUND);
-}
-	
-void OnlinePlayer::pieceCapturedSound()
-{
-	int random = rand() % 3;
-
-	if(random == 0)
-		gSound->playEffect(CAPTURE1_SOUND);
-	else if(random == 3)
-		gSound->playEffect(CAPTURE2_SOUND);
-	else if(random == 2)
-		gSound->playEffect(CAPTURE3_SOUND);
 }

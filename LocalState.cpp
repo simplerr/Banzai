@@ -9,6 +9,7 @@
 #include "LocalPlayer.h"
 #include "Input.h"
 #include "PiecesCaptured.h"
+#include "Sound.h"
 
 LocalState LocalState::mLocalState;
 
@@ -61,7 +62,7 @@ void LocalState::update(double dt)
 			mPlayer2 = mActivePlayer;
 			mActivePlayer = tmp;
 			mActivePlayer->setSelected(-10, -10);
-			mActivePlayer->setInvalid(-10, -10);
+			mActivePlayer->setInvalid(-10, -10);		
 
 			// Checkmate?
 			if(mActivePlayer->getCheckMate())	{
@@ -74,6 +75,7 @@ void LocalState::update(double dt)
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
 			mActivePlayer->setSelected(-10, -10);
 			mStatusText.setText("Invalid position!", RED, 2.0f);
+			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case WRONG_COLOR:
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
@@ -81,11 +83,13 @@ void LocalState::update(double dt)
 				mStatusText.setText("You are white", RED, 2.0f);
 			else
 				mStatusText.setText("You are black", RED, 2.0f);
+			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case GETS_CHECKED:
 			mActivePlayer->setInvalid(actionResult.position.x, actionResult.position.y);
 			mActivePlayer->setSelected(-10, -10);
 			mStatusText.setText("Check!", RED, 2.0f);
+			gSound->playEffect(ILLEGAL_SOUND);
 			break;
 		case PIECE_SELECTED:
 			mActivePlayer->setSelected(actionResult.position.x, actionResult.position.y);
@@ -146,4 +150,25 @@ void LocalState::displayCheckMate()
 		// No - change state
 		changeState(MenuState::Instance());
 	}
+}
+
+void LocalState::pieceMovedSound()
+{
+	int random = rand() % 2;
+	if(random == 0)
+		gSound->playEffect(MOVE1_SOUND);
+	else
+		gSound->playEffect(MOVE2_SOUND);
+}
+	
+void LocalState::pieceCapturedSound()
+{
+	int random = rand() % 3;
+
+	if(random == 0)
+		gSound->playEffect(CAPTURE1_SOUND);
+	else if(random == 3)
+		gSound->playEffect(CAPTURE2_SOUND);
+	else if(random == 2)
+		gSound->playEffect(CAPTURE3_SOUND);
 }

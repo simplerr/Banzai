@@ -36,6 +36,9 @@ public:
 	bool	getCheckMate();
 	string	getName();
 	string	getOpponent();
+
+	void pieceMovedSound();
+	void pieceCapturedSound();
 private:
 	Piece*	mSelectedPiece;
 	Board*	mBoard;

@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include <time.h>
 #include "common\DirectInput.h"
 #include "Input.h"
 #include "Player.h"
@@ -7,6 +7,7 @@
 #include "Piece.h"
 #include "Input.h"
 #include "LocalState.h"
+#include "Sound.h"
 
 //! Constructor.
 Player::Player(Color color)
@@ -16,6 +17,7 @@ Player::Player(Color color)
 	mName		= "#NOVALUE";
 	mOpponent	= "#NOVALUE";
 	mBoard		= NULL;
+	srand(time(0));
 }
 
 //! Destructor.
@@ -77,6 +79,7 @@ ActionResult Player::performAction()
 	else if(gInput->keyPressed(VK_LBUTTON) && mSelectedPiece != NULL)
 	{
 		Piece* piece = mBoard->getPieceAt(pos.x, pos.y);
+		Position oldPos = mSelectedPiece->getPos();
 		// Was it a piece of the same color that was pressed? - Change the selected piece
 		if(piece != NULL && piece->getColor() == getColor())
 		{
@@ -93,6 +96,7 @@ ActionResult Player::performAction()
 				if(piece != NULL)	{
 					handleCapture(piece->getColor(), piece->getType());
 					mBoard->removePiece(piece);
+					pieceCapturedSound();
 				}
 
 				// Return piece moved msg
@@ -103,8 +107,12 @@ ActionResult Player::performAction()
 				mSelectedPiece->moved();
 
 				// Was it castling?
-				if(mSelectedPiece->getType() == KING && abs(action.from.x - action.position.x) == 2)
+				if(mSelectedPiece->getType() == KING && abs(mSelectedPiece->getPos().x - oldPos.x) > 1)	{
 					handleCastling(mSelectedPiece);
+					gSound->playEffect(CASTLE_SOUND);
+				}
+				else
+					pieceMovedSound();
 
 				mSelectedPiece = NULL;
 			}
@@ -217,4 +225,25 @@ string Player::getOpponent()
 Board*	Player::getBoard()
 {
 	return mBoard;
+}
+
+void Player::pieceMovedSound()
+{
+	int random = rand() % 2;
+	if(random == 0)
+		gSound->playEffect(MOVE1_SOUND);
+	else
+		gSound->playEffect(MOVE2_SOUND);
+}
+	
+void Player::pieceCapturedSound()
+{
+	int random = rand() % 3;
+
+	if(random == 0)
+		gSound->playEffect(CAPTURE1_SOUND);
+	else if(random == 1)
+		gSound->playEffect(CAPTURE2_SOUND);
+	else if(random == 2)
+		gSound->playEffect(CAPTURE3_SOUND);
 }

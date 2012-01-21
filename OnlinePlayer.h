@@ -41,9 +41,6 @@ public:
 	bool waitingOnOpponent();
 	bool waitingOnAnswer();
 	bool waitingOnMove();
-
-	void pieceMovedSound();
-	void pieceCapturedSound();
 private:
 	GUI*		mGui;
 

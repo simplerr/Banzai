@@ -31,6 +31,7 @@ using namespace std;
 #define CASTLE_SOUND		"sounds\\castling.wav"
 #define ILLEGAL_SOUND		"sounds\\illegal.wav"
 #define OPPONENT_LEAVE_SOUND "sounds\\user_disconnect.wav"
+#define APPLAUD_SOUND		"sounds\\applauds.wav"
 
 enum ActionId
 {

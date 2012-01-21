@@ -5,6 +5,7 @@
 #include "Piece.h"
 #include "Input.h"
 #include "LocalState.h"
+#include "Sound.h"
 
 LocalPlayer::LocalPlayer(Color color) : Player(color)
 {
@@ -18,7 +19,7 @@ LocalPlayer::~LocalPlayer()
 
 void LocalPlayer::handleCastling(Piece* king)
 {
-
+	
 }
 	
 void LocalPlayer::handleCapture(Color color, PieceType type)

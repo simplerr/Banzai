@@ -163,7 +163,7 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 	}
 	case ID_SENT_APPLAUD	:	{
 		// TODO: Play a sound
-		mGui->setStatus("Applauds!", GREEN, 3.0f);
+		gSound->playEffect(APPLAUD_SOUND);
 	}
 	}
 
