@@ -138,6 +138,7 @@ Chat::~Chat()
 void Chat::addMessage(string from, string message)
 {
 	string name;
+	string msg = message;
 	if(first)
 		name = "\n<";
 	else
@@ -147,6 +148,10 @@ void Chat::addMessage(string from, string message)
 	name += ">: ";
 	AddText(mhChatBox, (char*)name.c_str(), RGB(180, 0, 0));
 	AddText(mhChatBox, (char*)message.c_str(), RGB(0, 0, 0));
+
+	if(msg.find("\n") == string::npos)
+		AddText(mhChatBox, "\n", RGB(0, 0, 0));
+
 	first = false;
 }
 	
@@ -206,6 +211,9 @@ void Chat::sendChatMessage()
 		name += ">: ";
 		AddText(mhChatBox, (char*)name.c_str(), RGB(0, 180, 0));
 		AddText(mhChatBox, inputBuffer, RGB(0, 0, 0));
+
+		if(input.find("\n") == string::npos)
+			AddText(mhChatBox, "\n", RGB(0, 0, 0));
 
 		SetWindowText(mhInputBox, "");
 		SendMessage(mhInputBox, EM_SETSEL, 0, MAKELONG(0, 0));	// NOTE: Not needed any more.

@@ -63,7 +63,7 @@ void GUI::draw()
 
 	// Names
 	if(mPlayer->getOpponent() != "#NOVALUE")
-		gGraphics->drawText(mPlayer->getName() + " vs " + mPlayer->getOpponent(), 680, 20, BIG_DX);
+		gGraphics->drawText(mPlayer->getName() + " vs " + mPlayer->getOpponent(), 680, 20, BIG_DX, 8, D3DCOLOR_ARGB(255, 175, 77, 146));
 
 	// Draw the status text
 	mStatusText.draw();
