@@ -31,7 +31,7 @@ OnlinePlayer::OnlinePlayer(Color color) : Player(color)
 {
 	mCheckMate		= false;
 	mWaitingOnAnswer= false;
-	setBoard(new Board(80));
+	
 	srand(time(0));
 }
 
@@ -51,6 +51,7 @@ void OnlinePlayer::init(PeerType type)
 {
 	if(type == HOST)
 	{
+		setBoard(new Board(80, false));
 		mWaitingForOpponent = true;
 		mWaitingOnMove = false;
 		setColor(WHITE);
@@ -58,6 +59,7 @@ void OnlinePlayer::init(PeerType type)
 	}
 	else if(type == CLIENT)
 	{
+		setBoard(new Board(80, true));
 		mWaitingForOpponent = false;
 		mWaitingOnMove = true;
 		setColor(BLACK);

@@ -7,13 +7,16 @@
 class Pawn : public Piece
 {
 public:
-	Pawn(Color color, int x, int y);
+	Pawn(Color color, int x, int y, Side side);
 	~Pawn();
+
+	void setSide(Side side);
 
 	bool pinning(int x, int y);
 	void moved();
 private:
 	bool mFirstMove;
+	Side mSide;
 };
 
 #endif

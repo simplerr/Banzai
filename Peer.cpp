@@ -106,6 +106,12 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 		bitstream.Read(to.y);
 
 		// The opponent moved, do what's neccessary
+		// Mirror the position, since he's in the top in our window
+		Position tmp(7, 7);
+		from.x = 7 - from.x;
+		from.y = 7 - from.y;
+		to.x = 7 - to.x;
+		to.y = 7 - to.y;
 		mPlayer->opponentMoved(from, to);
 		break;
 	}

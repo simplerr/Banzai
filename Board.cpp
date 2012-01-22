@@ -17,20 +17,21 @@
 /**
 @param squareSize The width and height for each square.
 */
-Board::Board(int squareSize)
+Board::Board(int squareSize, bool flipped)
 {
 	// Load the textures
 	mBlack = gGraphics->loadTexture("imgs\\black.bmp");
 	mWhite = gGraphics->loadTexture("imgs\\white.bmp");
 	mBorder = gGraphics->loadTexture("imgs\\border.bmp");
 	mTextures = new Textures();
+	mFlipped = flipped;
 
 	// Set board position and square size
 	mSquareSize = squareSize;
 	mTopLeft = Vector(20, 20);
 
 	// Create the pieces and place them at the correct locations
-	initPieces();
+	initPieces(flipped);
 
 	// Set off screen positions
 	mInvalid = Position(-10, -10);
@@ -51,39 +52,67 @@ Board::~Board()
 }
 
 //! Creates all pieces and sets their location.
-void Board::initPieces()
+void Board::initPieces(bool flipped)
 {
+	int whiteY = 7;
+	int blackY = 0;
+
+	if(flipped)	{
+		whiteY = 0;
+		blackY = 7;
+	}
+
 	// Pawns
 	for(int i = 0; i < 8; i++)	{
-		addPiece(PAWN, BLACK, i, 1);
-		addPiece(PAWN, WHITE, i, 6);
+		if(!flipped)	{
+			addPiece(PAWN, BLACK, i, 1);
+			addPiece(PAWN, WHITE, i, 6);
+		}
+		else	{
+			addPiece(PAWN, BLACK, i, 6);
+			addPiece(PAWN, WHITE, i, 1);
+		}
 	}
 
 	// Rooks
-	addPiece(ROOK, BLACK, 0, 0);
-	addPiece(ROOK, BLACK, 7, 0);
-	addPiece(ROOK, WHITE, 0, 7);
-	addPiece(ROOK, WHITE, 7, 7);
+	addPiece(ROOK, BLACK, 0, blackY);
+	addPiece(ROOK, BLACK, 7, blackY);
+	addPiece(ROOK, WHITE, 0, whiteY);
+	addPiece(ROOK, WHITE, 7, whiteY);
 
 	// Knights
-	addPiece(KNIGHT, BLACK, 1, 0);
-	addPiece(KNIGHT, BLACK, 6, 0);
-	addPiece(KNIGHT, WHITE, 1, 7);
-	addPiece(KNIGHT, WHITE, 6, 7);
+	addPiece(KNIGHT, BLACK, 1, blackY);
+	addPiece(KNIGHT, BLACK, 6, blackY);
+	addPiece(KNIGHT, WHITE, 1, whiteY);
+	addPiece(KNIGHT, WHITE, 6, whiteY);
 
 	// Bishops
-	addPiece(BISHOP, BLACK, 2, 0);
-	addPiece(BISHOP, BLACK, 5, 0);
-	addPiece(BISHOP, WHITE, 2, 7);
-	addPiece(BISHOP, WHITE, 5, 7);
+	addPiece(BISHOP, BLACK, 2, blackY);
+	addPiece(BISHOP, BLACK, 5, blackY);
+	addPiece(BISHOP, WHITE, 2, whiteY);
+	addPiece(BISHOP, WHITE, 5, whiteY);
 
-	// Queens
-	addPiece(QUEEN, BLACK, 3, 0);
-	addPiece(QUEEN, WHITE, 3, 7);
+	if(!flipped)
+	{
+		// Queens
+		addPiece(QUEEN, BLACK, 3, blackY);
+		addPiece(QUEEN, WHITE, 3, whiteY);
 	
-	// Kings
-	addPiece(KING, BLACK, 4, 0);
-	addPiece(KING, WHITE, 4, 7);
+		// Kings
+		addPiece(KING, BLACK, 4, blackY);
+		addPiece(KING, WHITE, 4, whiteY);
+	}
+	else
+	{
+		// Queens
+		addPiece(QUEEN, BLACK, 4, blackY);
+		addPiece(QUEEN, WHITE, 4, whiteY);
+	
+		// Kings
+		addPiece(KING, BLACK, 3, blackY);
+		addPiece(KING, WHITE, 3, whiteY);
+	}
+	
 }
 
 //! Draws the board.
@@ -140,8 +169,16 @@ void Board::addPiece(PieceType type, Color color, int x, int y)
 {
 	// Check type and add the right piece
 	Piece* piece = NULL;
-	if(type == PAWN)	
-		piece = new Pawn(color, x, y);
+	if(type == PAWN)	{
+		if(mFlipped && color == WHITE)
+			piece = new Pawn(color, x, y, UP);
+		else if(mFlipped && color == BLACK)
+			piece = new Pawn(color, x, y, DOWN);
+		else if(!mFlipped && color == BLACK)
+			piece = new Pawn(color, x, y, UP);
+		else if(!mFlipped && color == WHITE)
+			piece = new Pawn(color, x, y, DOWN);
+	}
 	else if(type == KNIGHT)	
 		piece = new Knight(color, x, y);
 	else if(type == BISHOP)	
@@ -438,7 +475,7 @@ void Board::reset()
 	clearPieces();
 
 	// Add new pieces
-	initPieces();
+	initPieces(mFlipped);
 }
 
 //! Returns the texture handler.

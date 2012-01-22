@@ -16,12 +16,12 @@ class Pawn;
 class Board
 {
 public:
-	Board(int squareSize);
+	Board(int squareSize, bool flipped = false);
 	~Board();
 
 	void draw();
 
-	void initPieces();
+	void initPieces(bool flipped);
 	void clearPieces();
 	void addPiece(PieceType type, Color color, int x, int y);
 	void removePiece(Piece* piece);
@@ -56,6 +56,7 @@ private:
 	Position	mInvalid;
 	Position	mSelected;
 	int			mSquareSize;
+	bool		mFlipped;
 };
 
 #endif

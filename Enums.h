@@ -66,6 +66,7 @@ struct Position
 		this->x = x;
 		this->y = y;
 	}
+
 	int x;
 	int y;
 };
@@ -119,6 +120,12 @@ enum Color
 	RED,
 	GREEN,
 	NONE
+};
+
+enum Side
+{
+	DOWN = -1,
+	UP = 1
 };
 
 enum PieceType
