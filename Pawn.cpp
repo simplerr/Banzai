@@ -45,7 +45,6 @@ bool Pawn::pinning(int x, int y)
 			if(getBoard()->getPieceAt(x, y)->getColor() != getColor())
 				pinning = true;
 		}
-
 	}
 
 	return pinning;

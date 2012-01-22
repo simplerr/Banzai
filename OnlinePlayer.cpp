@@ -140,7 +140,7 @@ void OnlinePlayer::update(float dt)
 	}
 	// Promt "Not your turn" if the player tries to move when he's waiting on the other player to move
 	else if(!mWaitingForOpponent && !mCheckMate && mWaitingOnMove)	{
-		if(gInput->keyPressed(VK_LBUTTON) && gInput->mousePosition().x < 740)	{
+		if(gInput->keyPressed(VK_LBUTTON) && gInput->mousePosition().x < 660)	{
 			mGui->setStatus("Not your turn!", RED, 2.0f);
 			gSound->playEffect(ILLEGAL_SOUND);
 		}
