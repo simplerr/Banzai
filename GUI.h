@@ -31,6 +31,7 @@ public:
 	bool displayOpponentLeft();
 	void displayRematchRequest();
 	void displayRematchDecline();
+	void displayNoResponse();
 	void initStats();
 	void buildUpperPanel();
 

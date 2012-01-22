@@ -179,51 +179,43 @@ int Runnable::run()
             DispatchMessage( &msg );
 		}
 		// Otherwise, do animation/game stuff
-		//else
-        {	
-			// If the application is paused then free some CPU cycles to other 
-			// applications and then continue on to the next frame
-			if( mPaused )
-			{
-				Sleep(20);
-				continue;
-			}
+		// If the application is paused then free some CPU cycles to other 
+		// applications and then continue on to the next frame
+		if(mPaused)
+		{
+			Sleep(20);
+			//continue;
+		}
 
-			if( !mDeviceLost )
-			{
-				__int64 currTimeStamp = 0;
-				QueryPerformanceCounter((LARGE_INTEGER*)&currTimeStamp);
-				float dt = (currTimeStamp - prevTimeStamp)*secsPerCnt;
+		if(!mDeviceLost)
+		{
+			__int64 currTimeStamp = 0;
+			QueryPerformanceCounter((LARGE_INTEGER*)&currTimeStamp);
+			float dt = (currTimeStamp - prevTimeStamp)*secsPerCnt;
 				
-				if(mDeltaSum < (float)1/60)	{
-					mDeltaSum += dt;
-				}
-				else	{
-					// Get snapshot of input devices
-					/*gDInput->poll();
-					gDInput->updateCursor();*/
-
-					// Update everything
-					if(mDeltaSum < .25) // FPS is capped - todo
-						update(time, mDeltaSum);
-
-					// Draw everything
-					drawAll();				
-
-					// Get device state
-					mDeviceLost = isDeviceLost();
-
-					time += mDeltaSum;
-					mDeltaSum = 0;
-				}	
-				// Prepare for next iteration: The current time stamp becomes
-				// the previous time stamp for the next iteration
-				prevTimeStamp = currTimeStamp;
+			if(mDeltaSum < (float)1/60)	{
+				mDeltaSum += dt;
 			}
 			else	{
-				Sleep(20);
-			}
-        }
+				// Update everything
+				if(mDeltaSum < .25) // FPS is capped - todo
+					update(time, mDeltaSum);
+
+				// Draw everything
+				drawAll();				
+
+				// Get device state
+				mDeviceLost = isDeviceLost();
+
+				time += mDeltaSum;
+				mDeltaSum = 0;
+			}	
+			// Prepare for next iteration: The current time stamp becomes the previous time stamp for the next iteration
+			prevTimeStamp = currTimeStamp;
+		}
+		else	{
+			Sleep(20);
+		}
     }
 	return (int)msg.wParam;
 }

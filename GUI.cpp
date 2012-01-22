@@ -233,7 +233,9 @@ LRESULT GUI::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 			int answer = MessageBox(gGame->getMainWnd(), "Are you sure you want to leave?", "Leaving game", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1);
 
 			if(answer == IDYES)	{
-				// Tell the opponent that you left.
+				gSound->playEffect(OPPONENT_LEAVE_SOUND);
+
+				// Tell the opponent that you left
 				RakNet::BitStream bitstream;
 				bitstream.Write((unsigned char)ID_LEFT_GAME);
 				PlayingOnline::Instance()->getPeer()->Send(&bitstream, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
@@ -253,4 +255,9 @@ LRESULT GUI::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Let the chat handle messages as well
 	return mChat->msgProc(msg, wParam, lParam);
+}
+
+void GUI::displayNoResponse()
+{
+	MessageBox(gGame->getMainWnd(), "Server not responding. Maybe the host dropped before you connected.\n\nGo to main menu?", "No response!", MB_ICONEXCLAMATION | MB_OK);
 }

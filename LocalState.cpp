@@ -97,8 +97,10 @@ void LocalState::update(double dt)
 	// Ask the user if he really wants to leave when after he pressed enter
 	if(gInput->keyPressed(VK_ESCAPE))	{
 		int result = MessageBox(gGame->getMainWnd(), "Are you sure you want to exit the match?", "Leaving match", MB_YESNO | MB_ICONQUESTION);
-		if(result == IDYES)
+		if(result == IDYES)	{
+			gSound->playEffect(OPPONENT_LEAVE_SOUND);
 			changeState(MenuState::Instance());
+		}
 	}
 }
 

@@ -21,6 +21,7 @@
 #include "GUI.h"
 #include "ServerList.h"
 #include "Peer.h"
+#include "Sound.h"
 
 PlayingOnline PlayingOnline::mPlayingOnline;
 
@@ -59,8 +60,15 @@ void PlayingOnline::update(double dt)
 	// Ask the user if he really wants to leave when after he pressed enter
 	if(gInput->keyPressed(VK_ESCAPE))	{
 		int result = MessageBox(gGame->getMainWnd(), "Are you sure you want to exit the match?", "Leaving match", MB_YESNO | MB_ICONQUESTION);
-		if(result == IDYES)
+		if(result == IDYES)	{
+			gSound->playEffect(OPPONENT_LEAVE_SOUND);
+			// Tell the opponent that you left
+			RakNet::BitStream bitstream;
+			bitstream.Write((unsigned char)ID_LEFT_GAME);
+			getPeer()->Send(&bitstream, HIGH_PRIORITY, RELIABLE_ORDERED, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+
 			changeState(MenuState::Instance());
+		}
 	}
 
 	// Change the state if true

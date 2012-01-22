@@ -104,14 +104,28 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 		switch(wParam)
 		{
 		case IDC_LOGIN:
-			if(gDatabase == NULL)
-				gDatabase = new Database();
-			
 			GetDlgItemText(hWndDlg, IDC_EDIT1, name, 255);
-			GetDlgItemText(hWndDlg, IDC_EDIT2, pass, 255);
 
-			EndDialog(hWndDlg, 0);
-			SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
+			// Have to enter a nickname
+			if(strcmp(name, "") != 0)
+			{
+				if(gDatabase == NULL)
+					gDatabase = new Database();
+			
+				GetDlgItemText(hWndDlg, IDC_EDIT2, pass, 255);
+
+				EndDialog(hWndDlg, 0);
+				SendMessage(gGame->getMainWnd(), IDC_TRY_LOGIN, 0, 0);
+
+				strcpy(name, "");
+				strcpy(pass, "");
+			}
+			else	{
+				gSound->playEffect(BAD_LOGIN_SOUND);
+				EndDialog(hWndDlg, 0);
+				DialogBox(gGame->getAppInst(), MAKEINTRESOURCE(IDD_DIALOG1), gGame->getMainWnd(), (DLGPROC)DlgProc);
+			}
+
 			break;
 		case IDC_REGISTER:
 			// Prompt the register dialog.

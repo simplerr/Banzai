@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	//	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 	//#endif
 	//
-	Game game(hInstance, "Banzai v0.1", 1090, 720, D3DDEVTYPE_HAL, D3DCREATE_HARDWARE_VERTEXPROCESSING);
+	Game game(hInstance, "Banzai v0.1", 1090, 710, D3DDEVTYPE_HAL, D3DCREATE_HARDWARE_VERTEXPROCESSING);
 	gGame = &game;
 
 	gInput = new Input();

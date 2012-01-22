@@ -162,11 +162,15 @@ bool Peer::handlePacket(RakNet::Packet *packet)
 		break;
 	}
 	case ID_SENT_APPLAUD	:	{
-		// TODO: Play a sound
 		gSound->playEffect(APPLAUD_SOUND);
+		break;
 	}
+	case ID_CONNECTION_ATTEMPT_FAILED:
+		gSound->playEffect(OPPONENT_LEAVE_SOUND);
+		mGui->displayNoResponse();
+		PlayingOnline::Instance()->stateChange();
 	}
-
+	
 	return false;
 }
 

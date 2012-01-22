@@ -3,15 +3,10 @@
 #include "Enums.h"
 
 #define IDC_MAINEDIT  101
-#define USERNAME "p0_10076749"
+#define USERNAME "104714-wn93145"
 #define PASSWORD "b311m4ns1"
-#define DATABASE "p0_10076749_Banzai"
-#define SERVER "sql201.php0h.com"
-
-#define USERNAME "root"
-#define PASSWORD "test"
-#define DATABASE "banzai"
-#define SERVER "localhost"
+#define DATABASE "104714-banzai"
+#define SERVER "mysql01.citynetwork.se"
 
 //! Constructor.
 Database::Database() : mConnection(false)	// Important to pass false!!!!!
@@ -19,8 +14,10 @@ Database::Database() : mConnection(false)	// Important to pass false!!!!!
 	mConnection.connect(DATABASE, SERVER, USERNAME, PASSWORD);
 
 	// Check if connected TODO:
-	if(mConnection.connected())
-		int a = 1;
+	if(!mConnection.connected())	{
+		MessageBox(0, "Could not connect to database.", "Connection error!", MB_ICONEXCLAMATION);
+		// Change state..
+	}
 }
 
 //! Destructor.

@@ -93,13 +93,6 @@ ActionResult Player::performAction()
 			// The piece can move to the pressed location
 			if(mBoard->validMove(mSelectedPiece, pos.x, pos.y))	
 			{
-				// A piece was captured
-				if(piece != NULL)	{
-					handleCapture(piece->getColor(), piece->getType());
-					mBoard->removePiece(piece);
-					pieceCapturedSound();
-				}
-
 				// Return piece moved msg
 				action = ActionResult(PIECE_MOVED, pos, mSelectedPiece->getPos());
 
@@ -107,11 +100,18 @@ ActionResult Player::performAction()
 				mSelectedPiece->setPos(pos.x, pos.y);
 				mSelectedPiece->moved();
 
-				// Was it castling?
-				if(mSelectedPiece->getType() == KING && abs(mSelectedPiece->getPos().x - oldPos.x) > 1)	{
+				// A piece was captured
+				if(piece != NULL)	{
+					handleCapture(piece->getColor(), piece->getType());
+					mBoard->removePiece(piece);
+					pieceCapturedSound();
+				}
+				// Castling?
+				else if(mSelectedPiece->getType() == KING && abs(mSelectedPiece->getPos().x - oldPos.x) > 1)	{
 					handleCastling(mSelectedPiece);
 					gSound->playEffect(CASTLE_SOUND);
 				}
+				// Normal move
 				else
 					pieceMovedSound();
 
