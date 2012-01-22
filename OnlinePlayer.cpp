@@ -178,6 +178,7 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 	}
 
 	movedPiece->setPos(to.x, to.y);
+	movedPiece->moved();
 
 	// No longer waiting for the opponent to do a move
 	mWaitingOnMove = false;
