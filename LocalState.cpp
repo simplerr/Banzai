@@ -65,7 +65,7 @@ void LocalState::update(double dt)
 			mActivePlayer->setInvalid(-10, -10);
 
 			// Send the last move to the other player NOTE: Kinda ugly..
-			mActivePlayer->setLastMove(mPlayer2->getLastMove().from, mPlayer2->getLastMove().to);
+			mActivePlayer->setLastMove(actionResult.from, actionResult.position);
 
 			// Checkmate?
 			if(mActivePlayer->getCheckMate())	{

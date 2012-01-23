@@ -85,6 +85,9 @@ void OnlinePlayer::update(float dt)
 				setSelected(-10, -10);
 				setInvalid(-10, -10);
 
+				// Remove the opponents last move
+				setLastMove();
+
 				// Send the move to the opponent
 				// ID - piece.x - piece.y - new.x - new.y
 				RakNet::BitStream bitstream;

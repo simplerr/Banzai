@@ -311,6 +311,7 @@ LRESULT Runnable::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 		return 0;
 	}
+
 	return DefWindowProc(mhMainWindow, msg, wParam, lParam);
 }
 

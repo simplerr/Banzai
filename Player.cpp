@@ -93,6 +93,7 @@ ActionResult Player::performAction()
 				action = ActionResult(PIECE_SELECTED, pos);
 
 				mBoard->setMovingOffset(getMouseOffset());
+				SetCursor(LoadCursor(0, IDC_HAND));
 			}
 		}
 	}
@@ -111,6 +112,7 @@ ActionResult Player::performAction()
 	{
 		mSelectedPiece->setMoving(false);
 		action = moveSelectedPiece(mBoard->toGridPos(gInput->mousePosition() + 0*mBoard->getMovingOffset()));
+		SetCursor(LoadCursor(0, IDC_ARROW));
 	}
 
 	// Return the action
@@ -144,6 +146,7 @@ ActionResult Player::moveSelectedPiece(Position pos)
 		mSelectedPiece = piece;
 		mBoard->setMovingOffset(getMouseOffset());
 		action = ActionResult(PIECE_SELECTED, pos);
+		SetCursor(LoadCursor(0, IDC_HAND));
 	}
 	// Didn't select a piece of the same color as self
 	else
@@ -151,10 +154,6 @@ ActionResult Player::moveSelectedPiece(Position pos)
 		// The piece can move to the pressed location
 		if(mBoard->validMove(mSelectedPiece, pos.x, pos.y))	
 		{
-			// Set last move position
-			mLastMove.from = mSelectedPiece->getPos();
-			mLastMove.to = pos;
-
 			// Return piece moved msg
 			action = ActionResult(PIECE_MOVED, pos, mSelectedPiece->getPos());
 

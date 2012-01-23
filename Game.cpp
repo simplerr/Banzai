@@ -85,6 +85,7 @@ Game::~Game()
 //! Inits all game related content.
 void Game::init()
 {
+	SetCursor(LoadCursor(0, IDC_ARROW));
 	mGameState = NULL;
 	changeState(MenuState::Instance());
 }
@@ -117,10 +118,14 @@ void Game::draw()
 //! The starting msgProc function.
 LRESULT Game::msgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// To get full control over the cursor. Otherwise the cursor will be set to IDC_ARROW automaticly
+	if(msg == WM_SETCURSOR)
+		return TRUE;
+
 	LRESULT result = gInput->msgProc(msg, wParam, lParam);
 	result = mGameState->msgProc(msg, wParam, lParam);
 	result = Runnable::msgProc(msg, wParam, lParam);
-
+	
 	return result;
 }
 
