@@ -30,6 +30,7 @@ public:
 	void		setInvalid(int x, int y);
 	void		setSelected(int x, int y);
 	Position	toGridPos(Vector pos);
+	Vector		toGlobalPos(Position pos);
 	void		promotePawn(Pawn* pawn);
 	bool		validMove(Piece* piece, int x, int y);
 	bool		checkMate(Color color);
@@ -40,6 +41,9 @@ public:
 
 	bool		resultsInCheck(Piece* piece, int x, int y);	// If piece moves to (x,y) will that result in a check on yourself?
 	Piece*		getCheckers(Color color, int& checkers);
+	int			getSquareSize();
+	void		setMovingOffset(Vector offset);
+	Vector		getMovingOffset();
 private:
 	// Helper functions.
 	bool		canMoveKing(Color color);
@@ -55,6 +59,7 @@ private:
 	
 	Position	mInvalid;
 	Position	mSelected;
+	Vector		mMovingOffset;
 	int			mSquareSize;
 	bool		mFlipped;
 };

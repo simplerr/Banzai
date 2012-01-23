@@ -3,6 +3,8 @@
 #include <wininet.h>
 #include <sys/types.h>
 #include <Winsock2.h>
+#include "common\Vector.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -23,6 +25,15 @@ void setFont(HWND hwnd, int height, int weight = FW_DONTCARE, string family="Ari
 	DEFAULT_PITCH | FF_SWISS, family.c_str());
 
 	SendMessage(hwnd, WM_SETFONT, WPARAM(hFont), true);
+}
+
+void setCursorPos(Vector pos)
+{
+	POINT point;
+	point.x = pos.x;
+	point.y = pos.y;
+	ClientToScreen(gGame->getMainWnd(), &point);
+	SetCursorPos(point.x, point.y);
 }
 
 string getText(HWND hwnd)

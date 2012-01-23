@@ -2,6 +2,7 @@
 #include "common\Graphics.h"
 #include "common\DirectInput.h"
 #include "common\Vector.h"
+#include "Input.h"
 #include "Board.h"
 #include "Textures.h"
 #include "Pawn.h"
@@ -155,7 +156,10 @@ void Board::draw()
 	for(auto iter = mPieces.begin(); iter != mPieces.end(); iter++)
 	{
 		Piece* piece = (*iter);
-		gGraphics->drawTexture(piece->getTexture(), mTopLeft.x + piece->getPos().x * mSquareSize + mSquareSize/2, mTopLeft.y + piece->getPos().y * mSquareSize + mSquareSize/2, mSquareSize, mSquareSize);
+		if(!piece->getMoving())
+			gGraphics->drawTexture(piece->getTexture(), mTopLeft.x + piece->getPos().x * mSquareSize + mSquareSize/2, mTopLeft.y + piece->getPos().y * mSquareSize + mSquareSize/2, mSquareSize, mSquareSize);
+		else
+			gGraphics->drawTexture(piece->getTexture(), gInput->mousePosition().x + mMovingOffset.x, gInput->mousePosition().y + mMovingOffset.y, mSquareSize, mSquareSize);
 	}
 }
 
@@ -489,4 +493,31 @@ void Board::clearPieces()
 {
 	// Clear the list of pieces
 	mPieces.clear();
+}
+
+int	Board::getSquareSize()
+{
+	return mSquareSize;
+}
+
+void Board::setMovingOffset(Vector offset)
+{
+	mMovingOffset = offset;
+}
+
+Vector Board::toGlobalPos(Position pos)
+{
+	Vector tmp;
+	tmp.x = pos.x;
+	tmp.y = pos.y;
+
+	tmp.x = tmp.x*getSquareSize() + 20 + getSquareSize()/2;
+	tmp.y = tmp.y*getSquareSize() + 20 + getSquareSize()/2;
+
+	return tmp;
+}
+
+Vector Board::getMovingOffset()
+{
+	return mMovingOffset;
 }

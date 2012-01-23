@@ -30,6 +30,8 @@ public:
 	void		setTexture(IDirect3DTexture9* texture);
 	void		setBoard(Board* board);
 	void		setCaptured(bool captured);	
+	void		setMoving(bool moving);
+	bool		getMoving();
 	bool		getCaptured();
 private:
 	IDirect3DTexture9*	mTexture;
@@ -39,6 +41,7 @@ private:
 	PieceType			mType;
 	int					mSize;
 	bool				mCaptured;
+	bool				mMoving;
 };
 
 #endif

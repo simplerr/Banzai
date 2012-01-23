@@ -18,6 +18,7 @@ Piece::Piece(Color color, int x, int y, PieceType type)
 	setTexture(NULL);
 	setBoard(NULL);
 	setCaptured(false);
+	setMoving(false);
 }
 	
 //! Destructor.
@@ -174,4 +175,14 @@ void Piece::setCaptured(bool captured)
 bool Piece::getCaptured()
 {
 	return mCaptured;
+}
+
+void Piece::setMoving(bool moving)
+{
+	mMoving = moving;
+}
+	
+bool Piece::getMoving()
+{
+	return mMoving;
 }

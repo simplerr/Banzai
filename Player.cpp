@@ -73,69 +73,107 @@ ActionResult Player::performAction()
 				mBoard->setSelected(pos.x, pos.y);
 				// Return piece selected msg
 				action = ActionResult(PIECE_SELECTED, pos);
+
+				mBoard->setMovingOffset(getMouseOffset());
 			}
 		}
 	}
 	// A piece is already selected
 	else if(gInput->keyPressed(VK_LBUTTON) && mSelectedPiece != NULL)
 	{
-		Piece* piece = mBoard->getPieceAt(pos.x, pos.y);
-		Position oldPos = mSelectedPiece->getPos();
-		// Was it a piece of the same color that was pressed? - Change the selected piece
-		if(piece != NULL && piece->getColor() == getColor())
-		{
-			mSelectedPiece = piece;
-			action = ActionResult(PIECE_SELECTED, pos);
-		}
-		// Didn't select a piece of the same color as self
-		else
-		{
-			// The piece can move to the pressed location
-			if(mBoard->validMove(mSelectedPiece, pos.x, pos.y))	
-			{
-				// Return piece moved msg
-				action = ActionResult(PIECE_MOVED, pos, mSelectedPiece->getPos());
+		mBoard->setMovingOffset(getMouseOffset());
+		action = moveSelectedPiece(pos);
+	}
 
-				// Update the selected piece's position
-				mSelectedPiece->setPos(pos.x, pos.y);
-				mSelectedPiece->moved();
-
-				// A piece was captured
-				if(piece != NULL)	{
-					handleCapture(piece->getColor(), piece->getType());
-					mBoard->removePiece(piece);
-					pieceCapturedSound();
-				}
-				// Castling?
-				else if(mSelectedPiece->getType() == KING && abs(mSelectedPiece->getPos().x - oldPos.x) > 1)	{
-					handleCastling(mSelectedPiece);
-					gSound->playEffect(CASTLE_SOUND);
-				}
-				// Normal move
-				else
-					pieceMovedSound();
-
-				mSelectedPiece = NULL;
-			}
-			// Can't move to the pressed location
-			else
-			{
-				// Return invalid position or checked msg
-				if(mBoard->resultsInCheck(mSelectedPiece, pos.x, pos.y))
-					action = ActionResult(GETS_CHECKED, mBoard->getPiece(KING, mSelectedPiece->getColor())->getPos());
-				else	{
-					if(pos.x >= 0 && pos.x <= 7 && pos.y >= 0 && pos.y <= 7)
-						action = ActionResult(INVALID_POSITION, pos);
-					else
-						action = ActionResult(PIECE_SELECTED, Position(-10, -10));
-				}
-				gSound->playEffect(ILLEGAL_SOUND);
-				mSelectedPiece = NULL;
-			}
-		}
+	if(gInput->keyDown(VK_LBUTTON) && mSelectedPiece != NULL)
+	{
+		mSelectedPiece->setMoving(true);
+	}
+	else if(gInput->keyReleased(VK_LBUTTON) && mSelectedPiece != NULL)
+	{
+		mSelectedPiece->setMoving(false);
+		action = moveSelectedPiece(mBoard->toGridPos(gInput->mousePosition() + 0*mBoard->getMovingOffset()));
 	}
 
 	// Return the action
+	return action;
+}
+
+Vector Player::getMouseOffset()
+{
+	Vector tmp;
+	tmp.x = mSelectedPiece->getPos().x;
+	tmp.y = mSelectedPiece->getPos().y;
+
+	tmp.x = tmp.x*mBoard->getSquareSize() + 20 + mBoard->getSquareSize()/2;
+	tmp.y = tmp.y*mBoard->getSquareSize() + 20 + mBoard->getSquareSize()/2;
+
+	tmp -= gInput->mousePosition();
+
+	return tmp;
+}
+
+//! Try to move the selected piece to (pos.x;pos.y).
+ActionResult Player::moveSelectedPiece(Position pos)
+{
+	ActionResult action;
+
+	Piece* piece = mBoard->getPieceAt(pos.x, pos.y);
+	Position oldPos = mSelectedPiece->getPos();
+	// Was it a piece of the same color that was pressed? - Change the selected piece
+	if(piece != NULL && piece->getColor() == getColor())
+	{
+		mSelectedPiece = piece;
+		mBoard->setMovingOffset(getMouseOffset());
+		action = ActionResult(PIECE_SELECTED, pos);
+	}
+	// Didn't select a piece of the same color as self
+	else
+	{
+		// The piece can move to the pressed location
+		if(mBoard->validMove(mSelectedPiece, pos.x, pos.y))	
+		{
+			// Return piece moved msg
+			action = ActionResult(PIECE_MOVED, pos, mSelectedPiece->getPos());
+
+			// Update the selected piece's position
+			mSelectedPiece->setPos(pos.x, pos.y);
+			mSelectedPiece->moved();
+
+			// A piece was captured
+			if(piece != NULL)	{
+				handleCapture(piece->getColor(), piece->getType());
+				mBoard->removePiece(piece);
+				pieceCapturedSound();
+			}
+			// Castling?
+			else if(mSelectedPiece->getType() == KING && abs(mSelectedPiece->getPos().x - oldPos.x) > 1)	{
+				handleCastling(mSelectedPiece);
+				gSound->playEffect(CASTLE_SOUND);
+			}
+			// Normal move
+			else
+				pieceMovedSound();
+
+			mSelectedPiece = NULL;
+		}
+		// Can't move to the pressed location
+		else
+		{
+			// Return invalid position or checked msg
+			if(mBoard->resultsInCheck(mSelectedPiece, pos.x, pos.y))
+				action = ActionResult(GETS_CHECKED, mBoard->getPiece(KING, mSelectedPiece->getColor())->getPos());
+			else	{
+				if(pos.x >= 0 && pos.x <= 7 && pos.y >= 0 && pos.y <= 7)
+					action = ActionResult(INVALID_POSITION, pos);
+				else
+					action = ActionResult(PIECE_SELECTED, Position(-10, -10));
+			}
+			gSound->playEffect(ILLEGAL_SOUND);
+			mSelectedPiece = NULL;
+		}
+	}
+
 	return action;
 }
 

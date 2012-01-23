@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enums.h"
+#include "common\Vector.h"
 #include <string>
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 	virtual void handleCapture(Color color, PieceType type);
 
 	ActionResult performAction();
+	ActionResult moveSelectedPiece(Position pos);
 
 	void    resetBoard();
 
@@ -36,6 +38,7 @@ public:
 	bool	getCheckMate();
 	string	getName();
 	string	getOpponent();
+	Vector	getMouseOffset();
 
 	void pieceMovedSound();
 	void pieceCapturedSound();
@@ -44,6 +47,7 @@ private:
 	Board*	mBoard;
 	Color	mColor;
 
+	Vector	mMovingOffset;
 	string	mName;
 	string	mOpponent;
 };
