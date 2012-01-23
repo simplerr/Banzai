@@ -42,10 +42,10 @@ void Input::draw()
 {
 	char buffer[256];
 	sprintf(buffer, "x: %f, y: %f", mMousePosition.x, mMousePosition.y);
-	gGraphics->drawText(string(buffer), 500, 100, CUSTOM, 20, 0xff000000);
+	gGraphics->drawText(string(buffer), 500, 100, CUSTOM, 20, 0xff00ff00);
 
 	sprintf(buffer, "dx: %f, dy: %f", mDx, mDy);
-	gGraphics->drawText(string(buffer), 500, 300, CUSTOM, 20, 0xff000000);
+	gGraphics->drawText(string(buffer), 500, 300, CUSTOM, 20, 0xff00ff00);
 }
 
 //! Updates the mouse position.

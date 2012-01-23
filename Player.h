@@ -2,6 +2,7 @@
 
 #include "Enums.h"
 #include "common\Vector.h"
+#include "common\d3dUtil.h"
 #include <string>
 using namespace std;
 
@@ -31,6 +32,7 @@ public:
 	void	setColor(Color color);
 	void	setSelected(int x, int y);
 	void	setInvalid(int x, int y);
+	void	setLastMove(Position from = Position(-10, -10), Position to = Position(-10, -10));
 
 	Color	getColor();
 	Board*	getBoard();
@@ -39,15 +41,19 @@ public:
 	string	getName();
 	string	getOpponent();
 	Vector	getMouseOffset();
+	LastMove getLastMove();
 
 	void pieceMovedSound();
 	void pieceCapturedSound();
 private:
+	IDirect3DTexture9*	mLine;
+	IDirect3DTexture9*	mArrow;
 	Piece*	mSelectedPiece;
 	Board*	mBoard;
 	Color	mColor;
 
-	Vector	mMovingOffset;
-	string	mName;
-	string	mOpponent;
+	Vector		mMovingOffset;
+	string		mName;
+	string		mOpponent;
+	LastMove	mLastMove;	
 };

@@ -33,6 +33,29 @@ using namespace std;
 #define OPPONENT_LEAVE_SOUND "sounds\\user_disconnect.wav"
 #define APPLAUD_SOUND		"sounds\\applauds.wav"
 
+//! The position on the game board.
+struct Position
+{
+	Position()	{
+		x = y = 0;
+	}
+
+	Position(int x, int y)	{
+		this->x = x;
+		this->y = y;
+	}
+
+	int x;
+	int y;
+};
+
+
+struct LastMove
+{
+	Position from;
+	Position to;
+};
+
 enum ActionId
 {
 	WRONG_COLOR,
@@ -53,22 +76,6 @@ enum MessageId
 	ID_MESSAGE_SENT,
 	ID_REQUEST_NAME,
 	ID_SENT_APPLAUD
-};
-
-//! The position on the game board.
-struct Position
-{
-	Position()	{
-		x = y = 0;
-	}
-
-	Position(int x, int y)	{
-		this->x = x;
-		this->y = y;
-	}
-
-	int x;
-	int y;
 };
 
 //! Name and IP of a server.

@@ -58,7 +58,9 @@ public:
 	bool drawTexturedShape(Shape shape, IDirect3DTexture9 *texture, Rect *srcRect = NULL, bool flipped = false);
 
 	//! Draws a thin line.
-	void drawLine(Vector start, Vector end, D3DCOLOR color = D3DCOLOR_ARGB(255, 0, 0, 0));
+	void drawLine(Vector start, Vector end, float thickness = 20.0f, D3DCOLOR color = D3DCOLOR_ARGB(255, 0, 0, 0));
+
+	void drawTexturedLine(IDirect3DTexture9* texture, Vector start, Vector end, float thickness = 20.0f);
 
 	//! Returns the sprite handler.
 	LPD3DXSPRITE getSpriteHandler();

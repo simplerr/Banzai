@@ -183,6 +183,9 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 	// No longer waiting for the opponent to do a move
 	mWaitingOnMove = false;
 
+	// Set the last move position
+	setLastMove(from, to);
+
 	// Checkmate?
 	if(getBoard()->checkMate(getColor()))	{
 		mCheckMate = true;

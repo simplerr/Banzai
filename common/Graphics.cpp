@@ -571,7 +571,7 @@ void Graphics::drawAnimation(IDirect3DTexture9* texture, float x, float y, int w
 @param end The end point.
 @param color Color to draw the line in.
 */
-void Graphics::drawLine(Vector start, Vector end, D3DCOLOR color)
+void Graphics::drawLine(Vector start, Vector end, float thickness, D3DCOLOR color)
 {
 	// Setup the vertexbuffer and its declaration
 	gd3dDevice->SetStreamSource(0, mVB_Rect, 0, sizeof(RectVertex));
@@ -581,15 +581,29 @@ void Graphics::drawLine(Vector start, Vector end, D3DCOLOR color)
 
 	HR(mVB_Rect->Lock(0, 0, (void**)&vertices, 0));
 
+	Vector diff = start - end;
+	float angle = atan2f(diff.y, diff.x);
+	angle -= 3.14/2;
+
 	vertices[0].color = color;
 	vertices[0].pos.x = start.x;
 	vertices[0].pos.y = start.y;
 	vertices[0].pos.z = 0;
 
 	vertices[1].color = color;
-	vertices[1].pos.x = end.x;
-	vertices[1].pos.y = end.y;
+	vertices[1].pos.x = start.x - cosf(angle) * thickness;
+	vertices[1].pos.y = start.y - sinf(angle) * thickness;
 	vertices[1].pos.z = 0; 
+
+	vertices[2].color = color;
+	vertices[2].pos.x = end.x + cosf(angle) * thickness;
+	vertices[2].pos.y = end.y + sinf(angle) * thickness;
+	vertices[2].pos.z = 0; 
+
+	vertices[3].color = color;
+	vertices[3].pos.x = end.x;
+	vertices[3].pos.y = end.y;
+	vertices[3].pos.z = 0; 
 
 	// Unlock the vertex buffer
 	HR(mVB_Rect->Unlock());
@@ -597,7 +611,57 @@ void Graphics::drawLine(Vector start, Vector end, D3DCOLOR color)
 	// Draw content in buffer
 	gd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 		
-	gd3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, 2);			
+	gd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);			
+}
+
+void Graphics::drawTexturedLine(IDirect3DTexture9* texture, Vector start, Vector end, float thickness)
+{
+	// Setup the vertexbuffer and its declaration
+	gd3dDevice->SetStreamSource(0, mVB_texture, 0, sizeof(TextureVertex));
+	gd3dDevice->SetVertexDeclaration(TextureVertex::Decl);	  
+
+	TextureVertex* vertices = 0;
+
+	HR(mVB_texture->Lock(0, 0, (void**)&vertices, 0));
+
+	Vector diff = start - end;
+	float angle = atan2f(diff.y, diff.x);
+	angle -= 3.14/2;
+
+	vertices[0].pos.x = start.x + cosf(angle) * thickness/2;
+	vertices[0].pos.y = start.y + sinf(angle) * thickness/2;
+	vertices[0].pos.z = 0;
+	vertices[0].tex0.x = 0;
+	vertices[0].tex0.y = 0;
+
+	vertices[1].pos.x = start.x - cosf(angle) * thickness/2;
+	vertices[1].pos.y = start.y - sinf(angle) * thickness/2;
+	vertices[1].pos.z = 0; 
+	vertices[1].tex0.x = 0;
+	vertices[1].tex0.y = 1;
+
+	vertices[2].pos.x = end.x + cosf(angle) * thickness/2;
+	vertices[2].pos.y = end.y + sinf(angle) * thickness/2;
+	vertices[2].pos.z = 0; 
+	vertices[2].tex0.x = 1;
+	vertices[2].tex0.y = 1;
+
+	vertices[3].pos.x = end.x - cosf(angle) * thickness/2;
+	vertices[3].pos.y = end.y - sinf(angle) * thickness/2;
+	vertices[3].pos.z = 0; 
+	vertices[3].tex0.x = 1;
+	vertices[3].tex0.y = 0;
+
+	// Unlock the vertex buffer
+	HR(mVB_texture->Unlock());
+
+	// Set texture
+	gd3dDevice->SetTexture (0, texture);
+
+	// Draw content in buffer
+	//gd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+		
+	gd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
 void Graphics::onLostDevice()

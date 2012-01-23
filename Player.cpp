@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "LocalState.h"
 #include "Sound.h"
+#include "common\Graphics.h"
 
 //! Constructor.
 Player::Player(Color color)
@@ -18,12 +19,16 @@ Player::Player(Color color)
 	mOpponent	= "#NOVALUE";
 	mBoard		= NULL;
 	srand(time(0));
+	mLine = gGraphics->loadTexture("imgs\\line.png");
+	mArrow = gGraphics->loadTexture("imgs\\arrow.png");
+	setLastMove();
 }
 
 //! Destructor.
 Player::~Player()
 {
-	
+	ReleaseCOM(mLine);
+	ReleaseCOM(mArrow);
 }
 
 //! Updates components.
@@ -42,6 +47,19 @@ void Player::update(float dt)
 void Player::draw()
 {
 	mBoard->draw();
+
+	// Draw the last move effect
+	Vector from = mBoard->toGlobalPos(mLastMove.from);
+	Vector to = mBoard->toGlobalPos(mLastMove.to);
+	Vector diff = to - from;
+	float angle = atan2f(diff.y, diff.x);
+
+	gGraphics->drawTexturedLine(mLine, mBoard->toGlobalPos(mLastMove.from), mBoard->toGlobalPos(mLastMove.to), 20.0f);
+
+	// The arrow
+	int width = 32;
+	int height = 64;
+	gGraphics->drawTexture(mArrow, mBoard->toGlobalPos(mLastMove.to).x + cosf(angle)*(width/2), mBoard->toGlobalPos(mLastMove.to).y + sinf(angle)*(width/2), width, height, angle);
 }
 
 //! Finds out what the result of the players action is.
@@ -133,6 +151,10 @@ ActionResult Player::moveSelectedPiece(Position pos)
 		// The piece can move to the pressed location
 		if(mBoard->validMove(mSelectedPiece, pos.x, pos.y))	
 		{
+			// Set last move position
+			mLastMove.from = mSelectedPiece->getPos();
+			mLastMove.to = pos;
+
 			// Return piece moved msg
 			action = ActionResult(PIECE_MOVED, pos, mSelectedPiece->getPos());
 
@@ -286,4 +308,15 @@ void Player::pieceCapturedSound()
 		gSound->playEffect(CAPTURE2_SOUND);
 	else if(random == 2)
 		gSound->playEffect(CAPTURE3_SOUND);
+}
+
+void Player::setLastMove(Position from, Position to)
+{
+	mLastMove.from = from;
+	mLastMove.to = to;
+}
+
+LastMove Player::getLastMove()
+{
+	return mLastMove;
 }
