@@ -48,6 +48,8 @@ private:
 	bool		mWaitingOnMove;
 	bool		mCheckMate;
 	bool		mWaitingOnAnswer;
+	bool		mWinner;
+	int			mDelay;
 };
 
 #endif

@@ -31,7 +31,9 @@ OnlinePlayer::OnlinePlayer(Color color) : Player(color)
 {
 	mCheckMate		= false;
 	mWaitingOnAnswer= false;
-	
+	mWinner			= false;
+	mDelay			= 0;
+
 	srand(time(0));
 }
 
@@ -104,9 +106,9 @@ void OnlinePlayer::update(float dt)
 
 				// Checkmate? NOTE: Important to check after the move is sent to opponent
 				if(getBoard()->checkMate(Color(getColor()*-1)))	{
-					mCheckMate = true;
-					mGui->setStatus("Check mate!", GREEN, 100.0f);
-					mGui->displayCheckMate(true);
+					mWinner = true;
+					mDelay++;
+					mCheckMate = true;				
 					gDatabase->addWin(getName());
 				}
 				else
@@ -153,8 +155,25 @@ void OnlinePlayer::update(float dt)
 //! Draws the board and gui.
 void OnlinePlayer::draw()
 {
-	Player::draw();
-	mGui->draw();	
+	if(mDelay != 2)	{
+		Player::draw();
+		mGui->draw();
+
+		if(mDelay == 1)
+			mDelay++;
+	}
+	else	{
+		if(mWinner)	{
+			mGui->setStatus("Check mate!", GREEN, 100.0f);
+			mGui->displayCheckMate(true);
+		}
+		else {
+			mGui->displayCheckMate(false);
+			mGui->setStatus("Check mate!", RED, 100.0f);
+		}
+
+		mDelay = 0;
+	}
 }
 
 //! Called when the opponent moved.
@@ -191,10 +210,10 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 
 	// Checkmate?
 	if(getBoard()->checkMate(getColor()))	{
+		mWinner = false;
+		mDelay++;
 		mCheckMate = true;
-		mGui->displayCheckMate(false);
 		gDatabase->addLoss(getName());
-		mGui->setStatus("Check mate!", RED, 100.0f);
 	}
 	else
 		mGui->setStatus("Your turn!", GREEN, 300.0f);
@@ -258,8 +277,11 @@ void OnlinePlayer::requestRematch()
 //! Restart the match.
 void OnlinePlayer::restartMatch()
 {
+	// Reset data
 	mCheckMate = false;
 	mWaitingOnAnswer = false;
+	mDelay = 0;
+	setLastMove();
 	getBoard()->reset();
 	if(getColor() == WHITE)
 		mWaitingOnMove = false;
