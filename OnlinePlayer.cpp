@@ -106,8 +106,9 @@ void OnlinePlayer::update(float dt)
 
 				// Checkmate? NOTE: Important to check after the move is sent to opponent
 				if(getBoard()->checkMate(Color(getColor()*-1)))	{
-					mWinner = true;
-					mDelay++;
+					mGui->setStatus("Check mate!", GREEN, 100.0f);
+					gGame->drawAll();
+					mGui->displayCheckMate(true);
 					mCheckMate = true;				
 					gDatabase->addWin(getName());
 				}
@@ -155,25 +156,8 @@ void OnlinePlayer::update(float dt)
 //! Draws the board and gui.
 void OnlinePlayer::draw()
 {
-	if(mDelay != 2)	{
-		Player::draw();
-		mGui->draw();
-
-		if(mDelay == 1)
-			mDelay++;
-	}
-	else	{
-		if(mWinner)	{
-			mGui->setStatus("Check mate!", GREEN, 100.0f);
-			mGui->displayCheckMate(true);
-		}
-		else {
-			mGui->displayCheckMate(false);
-			mGui->setStatus("Check mate!", RED, 100.0f);
-		}
-
-		mDelay = 0;
-	}
+	Player::draw();
+	mGui->draw();
 }
 
 //! Called when the opponent moved.
@@ -210,9 +194,10 @@ void OnlinePlayer::opponentMoved(Position from, Position to)
 
 	// Checkmate?
 	if(getBoard()->checkMate(getColor()))	{
-		mWinner = false;
-		mDelay++;
+		mGui->setStatus("Check mate!", RED, 100.0f);
+		gGame->drawAll();
 		mCheckMate = true;
+		mGui->displayCheckMate(false);
 		gDatabase->addLoss(getName());
 	}
 	else

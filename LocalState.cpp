@@ -69,6 +69,7 @@ void LocalState::update(double dt)
 
 			// Checkmate?
 			if(mActivePlayer->getCheckMate())	{
+				gGame->drawAll();
 				displayCheckMate();
 			}
 			
@@ -141,6 +142,9 @@ void LocalState::displayCheckMate()
 
 	// Rematch?
 	if(result == IDYES)	{
+		// Reset last moves
+		mActivePlayer->setLastMove();
+		mPlayer2->setLastMove();
 		mActivePlayer->resetBoard();
 		mPiecesCaptured->clear();
 		if(mActivePlayer->getColor() == BLACK)	{
